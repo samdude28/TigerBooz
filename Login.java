@@ -13,12 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Nathanael Bishop 
- * Simple login prototype intended for Apache & Tomcat integration 
- * 
- * SQL:
- *			CREATE DATABASE 4330;
- *			USE 4330;
- *			CREATE TABLE logins(name VARCHAR(30), password VARCHAR(30), email VARCHAR(30));		
+ * TigerBooz login servlet 
+ * 		
+ * The starting page for TigerBooz is http://52.26.169.0
  */
 
 public class Login extends HttpServlet {
@@ -45,18 +42,19 @@ public class Login extends HttpServlet {
 		
 		// JDBC driver name, database URL, and init connection/statement
 		String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-		String DB_NAME     = "logins";
+		String DB_TABLE    = "user";
+		String DB_NAME     = "tigerbooz";
 		String DB_URL      = "jdbc:mysql://localhost:3306/"+DB_NAME;
 		Connection conn = null;
 		Statement  stmt = null;
-		
+
 		//get the name & password from the HTML form and setup a success/fail var
 		String nameInput=request.getParameter("name");
 		String passInput=request.getParameter("password");
 		Boolean foundName=false;
 		
 		//declare the SQL variables
-		String name, password, email;
+		String name, password;
 		
 		//try to connect to db and search for the user
 		try {
@@ -66,25 +64,24 @@ public class Login extends HttpServlet {
 	
 			//Create and execute a query
 			stmt = (Statement) conn.createStatement();
-			String sql = "SELECT * FROM "+DB_NAME;
+			String sql = "SELECT * FROM "+DB_TABLE;
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//look through result set for the user's name and password
 			while(rs.next()){
 				//Retrieve by column name (from the SQL server)
 				name     = rs.getString("name");
-				email    = rs.getString("email");
 				password = rs.getString("password");
 				
 				//if we find a match, print it
 			 	if(name.equals(nameInput) && password.equals(passInput)) { 
 			 		foundName=true;
-			 		out.println("<h1><br>Welcome "+name+", your email is "+email);
+			 		out.println("<h1><br>Welcome "+name+"</h1>");
 			 	}
 			}
 			//if no name match, inform the user and give a way back
 			if(!foundName)
-				out.println("<h1>Incorrect name or password!</h1><a href='MainPage.html'>Go Back</a>");
+				out.println("<h1>Incorrect name or password!</h1><a href='index.html'>Go Back</a>");
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
