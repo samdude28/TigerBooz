@@ -63,7 +63,7 @@ public class Login extends HttpServlet {
 			 	if(name.equals(nameInput) && password.equals(passInput)) { 
 					//get this users unique ID 
 			 		userID   = rs.getInt("id");
-
+System.out.println(userID+" in login");
 			 		//create the login token cookie
 			 		Cookie loginCookie = new Cookie ("TigerBoozID", Integer.toString(userID));
 			 		loginCookie.setMaxAge(60 * 60);
