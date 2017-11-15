@@ -24,13 +24,12 @@ public class User {
     public static int getUserIDByCookie(Cookie[] cookies) {
 		int userID = 0;
 		
-		//look through the array of cookies for one named TigerBoozName
+		//look through the array of cookies for one named TigerBoozID
 		if(cookies != null)
 			for(Cookie cookie : cookies) 
 				if(cookie.getName().equals("TigerBoozID"))
 					userID = Integer.parseInt(cookie.getValue());
 		
-System.out.println("returning userid "+userID);		
 		return userID;
     }
 

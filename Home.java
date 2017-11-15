@@ -44,7 +44,7 @@ System.out.println("user id"+userID);
 
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
-		
+
 		try {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
@@ -56,10 +56,11 @@ System.out.println("user id"+userID);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//start the table for the users own reviews 
-			out.println("<div id='wrapper'><table id='keywords' cellspacing=0 cellpadding=0>"
+			out.println("<div id='socialmediawrap'><div id='socialmedia'><br>"
+					  + "<table id='keywords' cellspacing=0 cellpadding=0>"
 					  + "<thead><tr>\n");
 			out.println("<th><span>Liquor Name</span></th>\n"
-					  + "<th><span>Your Reviews</span></th>\n</tr></thead><tr>\n");
+					  + "<th><span>Your Review</span></th>\n</tr></thead><tr>\n");
 			
 			//loop through the result set and print in the table
 			while(rs.next()) {
@@ -68,8 +69,8 @@ System.out.println("user id"+userID);
 				out.println("<td>"+rs.getString("review")+"</td>\n</tr>\n");
 			}
 			
-			//close out the table tags
-			out.println("</tr></table>");
+			//close out the table tags and the div wrapper
+			out.println("</table><br></div></div>\n");
 			
 			//close all the connections
 	 		if(rs != null)
@@ -83,8 +84,8 @@ System.out.println("user id"+userID);
 			e.printStackTrace();
 		}
 
-		//finally close out the html tags and the big page table
-		out.println("</td></tr></table></body></html>");
+		//finally close out the html tags
+		out.println("<br></div></body></html>");
 	}
 	
 	

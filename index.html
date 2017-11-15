@@ -1,79 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <!--  CSC 4330 Fall 2018 Group Project
-        Nathanael Bishop, Joshua Grunder, Samuel Maloney, Christian Rodriguez, Vishaldeep Singh
-    -->
-
  <head>
   <meta charset="utf-8">
-  <title>TigerBooz</title>
-
-   <style>
-    .center {
-      text-align: center;
-    }
-    h1,h2,h3,h4 {
-      color:#461D7C;
-    }
-    table, th, td {
-      border: 0px white;
-    }
-    input {
-      width: 320px;
-    }
-    #right {
-      text-align: right;
-    }
-    #existing {
-      color:#FDD023;
-      background-color: #461D7C;  
-    }
-  </style>
-
+  <title>Login prototype</title>
+ 
+  <style>
+  h1,h2,h3,h4 {
+  	color:#461D7C;
+  }
+  table, th, td {
+  	border: 0px white;
+  }
+  input {
+  	width: 320px;
+  }
+  #right {
+  	text-align: right;
+  }
+  #existing {
+	color:#FDD023;
+	background-color: #461D7C; 	
+  }
+  </style>  
+ 
  </head>
  
  <body>
-
-  <div class="center">
-    <img src="/pictures/TigerBooz.jpg" style="vertical-align:middle">
-  </div>
+  <p style="text-align:center;"><img src="http://52.26.169.0/pictures/logo.jpg"></p>
 
   <h2>Sign up, it's free!</h2>
-  <form action="http://52.26.169.0:8080/4330/Signup" method="post">
-    <table>
-      <tr><td><label>Name or Nickname:</label></td>
-        <td><input name="name" type="text" id="Name or Nickname:"></td>
-      </tr>
-      <tr><td><label>Date of Birth:</label></td>
-        <td><input name="dob" type="text" id="Date of Birth:"></td>
-      </tr>
-      <tr><td><label>Email Address:</label></td>
-        <td><input name="email" type="email" id="Email Address:"></td>
-      </tr>
-      <tr><td><label>Desired Password:</label></td>
-        <td><input name="password" type="password" id="Desired Password:"></td>
-      </tr>
-      <tr><td></td>
-        <td id="right"><button type="submit">Sign Up</button></td>
-      </tr>
-    </table>
+  <form action="http://52.24.2.46:8080/4330/SignUp" method="post">
+	  <table>
+	    <tr><td><label>Name or Nickname:</label></td>
+	    	<td><input name="name" type="text" id="Name or Nickname:"></td>
+	    </tr>
+	    <tr><td><label>Email Address:</label></td>
+	    	<td><input name="email" type="email" id="Email Address:"></td>
+	    </tr>
+	    <tr><td><label>Desired Password:</label></td>
+	    	<td><input name="password" type="password" id="Desired Password:"></td>
+	    </tr>
+	    <tr><td><label>Date of Birth:</label></td>
+	    	<td><input name="dob" type="date" id="dob"></td>
+	   	</tr>
+	    <tr><td></td>
+	    	<td id="right"><button type="submit">Sign Up</button></td>
+	    </tr>
+	  </table>
   </form>
   
   <br><br><br><br><br><br>
   
   <div id="existing">
-    <form action="http://52.26.169.0:8080/4330/Login" method="post">
-      <table>
-        <tr><td>Existing User Name:</td>
-            <td>Password:</td>
-            <td></td>
-        </tr>
-        <tr><td><label><input name="name" type="text"></label></td>
-            <td><label><input name="password" type="password"></label></td>
-            <td><button type="submit">Login</button></td>
-        </tr>
-      </table>  
-    </form>
+	  <form action="http://52.24.2.46:8080/4330/Login" method="post">
+	  	<table>
+	    	<tr><td>Existing User Email:</td>
+	    		<td>Password:</td>
+	    		<td></td>
+	    	</tr>
+	    	<tr><td><label><input name="email" type="text"></label></td>
+	    		<td><label><input name="password" type="password"></label></td>
+	    		<td><button type="submit">Login</button></td>
+	    	</tr>
+	    </table>	
+	  </form>
   </div>
   
  </body>
