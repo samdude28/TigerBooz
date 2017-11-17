@@ -44,7 +44,7 @@ System.out.println("user id"+userID);
 		String liquorCategory = request.getParameter("liquorCategory");
 				
 		//start the table to show all the liquors of this type 
-		out.println("<div id='socialmediawrap'><div id='socialmedia'><br>"
+		out.println("<div id='rightpanewrap'><div id='rightpane'><br>"
 				  + "<table id='keywords' cellspacing=0 cellpadding=0>"
 				  + "<thead><tr>\n");
 		out.println("<th><span>Liquor Name</span></th>\n"
@@ -66,12 +66,13 @@ System.out.println("user id"+userID);
 			while(rs.next()) {
 				liquorID = rs.getInt("id");
 				//for readability each table cell get it's own Out statement
-				out.println("<td><form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
-						  + "<input type='hidden' name='id' value'="+liquorID+"'>"
-						  + "<input type='hidden' name='id' value'="+rs.getString("name")+"'>"
+				out.println("<tr><td><font color='#c507e6'>"+getLiquorNameByID(liquorID)+"</font><br>"
+                          + "<form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
+						  + "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
+						  + "<input type='hidden' name='liquorName' value='"+rs.getString("name")+"'>\n"
 			              + "<button type='submit'>"+rs.getString("name")+"</button></form></td>\n");
 				out.println("<td>"+getLiquorPrice(liquorID)+"</td>\n");
-			    out.println("<td>"+getLiquorRating(liquorID)+"</td>\n");
+			    out.println("<td>"+Liquor.getLiquorRatingImage(liquorID)+"</td></tr>\n");
 			}
 			
 			//close out the html table tag
@@ -84,12 +85,14 @@ System.out.println("user id"+userID);
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in Liquor doGet");			
 			
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}		
+
+		//finally close out the html tags
+		out.println("<br></div></body></html>");
 	}
 	
 	public static float getLiquorPrice(int liquorID) {
@@ -105,7 +108,7 @@ System.out.println("closed connections in Liquor doGet");
 						
 			//Create and execute a query to look for all liquors with the same id as liquorID
 			stmt         = (Statement) conn.createStatement();
-			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
+			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//add up all the prices in the query so we can get an average price
@@ -121,7 +124,6 @@ System.out.println("closed connections in Liquor doGet");
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in Liquor.getLiquorPrice");			
 	
 		}
 		catch (ClassNotFoundException | SQLException e) {
@@ -132,8 +134,8 @@ System.out.println("closed connections in Liquor.getLiquorPrice");
 		if(count==0)
 			return 0;
 		
-		//return the average price
-		return totalPrice / count;
+		//return the average price rounded to 2 digits
+		return (float) ((float)Math.round(totalPrice / count * 100.0) / 100.0);		
 	}
 	
 	public static float getLiquorRating(int liquorID) {
@@ -149,14 +151,14 @@ System.out.println("closed connections in Liquor.getLiquorPrice");
 						
 			//Create and execute a query to look for all liquors with the same id as liquorID
 			stmt         = (Statement) conn.createStatement();
-			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
+			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
-			
 			//add up all the ratings in the query so we can get an average rating
-			while(rs.next()) {
-				count++;
-				totalRating += rs.getFloat("price");
-			}
+			if(rs != null)
+				while(rs.next()) {
+					count++;
+					totalRating += rs.getFloat("rating");
+				}
 
 			//close all the connections to the db
 	 		if(rs != null)
@@ -165,7 +167,6 @@ System.out.println("closed connections in Liquor.getLiquorPrice");
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in Liquor.getLiquorRating");			
 	
 		}
 		catch (ClassNotFoundException | SQLException e) {
@@ -176,8 +177,91 @@ System.out.println("closed connections in Liquor.getLiquorRating");
 		if(count==0)
 			return 0;
 		
-		//return the average rating
-		return totalRating / count;
+		//return the average rating rounded to 1 digit
+		return (float) ((float)Math.round(totalRating / count * 10.0) / 10.0);
+	}
+
+	public static float getLiquorRating(int liquorID, int userID) {
+		float thisUserRating = 0;
+		String DB_TABLE    = "rating";
+		
+		try {
+			//Open a connection to the database
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
+						
+			//Create and execute a query to look for all liquors with the same id as liquorID
+			stmt         = (Statement) conn.createStatement();
+			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+" and user_id="+userID+";";
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+			
+			//if there are any results, it's the users star rating
+			if(rs.next())
+				thisUserRating = rs.getFloat("rating");
+
+			//close all the connections to the db
+	 		if(rs != null)
+	 			rs.close();
+	 		if(stmt != null) 
+				stmt.close();
+	 		if(conn != null)
+	 			conn.close();
+	
+		}
+		catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}		
+		
+		//return the users rating
+		return thisUserRating;
+	}
+	
+	public static String getLiquorRatingImage(int liquorID) {
+		String liquorImage = "";
+		float liquorRating = getLiquorRating(liquorID);
+		
+		//for each rating over 1.0 add a full star to the string
+		while (liquorRating > 1.0) {
+			liquorImage += "<img src='http://52.26.169.0/pictures/star.jpg'>";
+			liquorRating--;
+		}
+		
+		//now pick the correct image with 25% 50% or 75% of a "star"
+		if (liquorRating > 0.74)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg'>";
+		else if (liquorRating > 0.49)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg'>";
+		else if (liquorRating > 0.25)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg'>";
+		
+		//if no ratings were found, return the no ratings image
+		if(liquorImage.equals(""))
+				return "<img src='http://52.26.169.0/pictures/norating.jpg'>";
+		return liquorImage;
+	}
+	
+	public static String getLiquorRatingImage(int liquorID, int userID) {
+		String liquorImage = "";
+		float liquorRating = getLiquorRating(liquorID, userID);
+		
+		//for each rating over 1.0 add a full star to the string
+		while (liquorRating > 1.0) {
+			liquorImage += "<img src='http://52.26.169.0/pictures/star.jpg'>";
+			liquorRating--;
+		}
+		
+		//now pick the correct image with 25% 50% or 75% of a "star"
+		if (liquorRating > 0.74)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg'>";
+		else if (liquorRating > 0.49)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg'>";
+		else if (liquorRating > 0.25)
+			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg'>";
+		 
+		//if no ratings were found, return the no ratings image
+		if(liquorImage.equals(""))
+				return "<img src='http://52.26.169.0/pictures/norating.jpg'>";
+		return liquorImage;
 	}
 	
     public static String getLiquorNameByID(int liquorID) {
@@ -206,7 +290,6 @@ System.out.println("closed connections in Liquor.getLiquorRating");
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("connection closed in Liquor.getLiquorNameByID");	 		
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();

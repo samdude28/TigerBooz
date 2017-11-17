@@ -48,23 +48,29 @@ System.out.println("user id"+userID);
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
 						
-			//Create and execute a query to look for all of this users reviews
 			stmt         = (Statement) conn.createStatement();
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 		
-			//for readability this html is shown as grouped together horizontally
-			out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>"
-                      + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></div></div>"
-					  + "<div id='nameofalcwrap'><div id='nameofalc'><p>"+liquorName+"</p></div></div>");
-	        out.println("<div id='ratingswrap'><div id='ratings'><p>"+Liquor.getLiquorRating(liquorID)+"</p></div></div>"
-	        		  + "<div id='nameofalcwrap'><div id='nameofalc'><p>Summary of product/Health facts</p></div></div>");
-	        out.println("<div id='commentswrap'><div id='comments'><p>Comments</p></div></div>"
-	        		  + "<div id='commentswrap'><div id='comments'><p>Recipes</p></div></div>"
-	        		  + "<div id='commentswrap'><div id='comments'><p>Known sellers and pricing</p></div></div>");
+			out.println("<div id='rightpanewrap'><div id='rightpane'>"); //600
+			out.println("&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
+					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></td>");
+			out.println("<td><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>"
+                      +  Liquor.getLiquorRatingImage(liquorID)+"</div><br><br>"
+                      + "Known Sellers and Pricing</td></table>");
+			
+/**			out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>" 
+			          + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></div></div>"); //360
+	        out.println("<div id='ratingswrap'><div id='ratings'><p>"+Liquor.getLiquorRating(liquorID)+"</p></div></div>"); //100
+
+	        out.println("<div id='nameofalcwrap'><div id='nameofalc'><p>"+liquorName+"</p></div></div>"); //200
+	        out.println("<div id='commentswrap'><div id='comments'><p>TODO: Known sellers and pricing</p></div></div>"); //220
+	        **/
+	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p></div></div>"); //600
+	        
 	        out.println("<div id='socialmediawrap'><div id='socialmedia'><p>Social Media postings here</p></div></div>");
-	        out.println("<div id='footerwrap'><div id='footer'><p>TigerBooz</p></div></div></div>");
+	
 
 		
 			//close all the connections
@@ -74,7 +80,6 @@ System.out.println("user id"+userID);
 					stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("connection closed in ShowIndividualLiquor");	 		
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -86,6 +91,6 @@ System.out.println("connection closed in ShowIndividualLiquor");
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		doGet(request,response);
 	}
 }

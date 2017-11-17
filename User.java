@@ -62,7 +62,6 @@ public class User {
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("connection closed in User.getUserIDByName");	 		
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -99,12 +98,10 @@ System.out.println("connection closed in User.getUserIDByName");
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("connection closed in User.getUserNameByID");	 		
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-System.out.println("returning user name"+userName);    	
 		return userName;
     }
 
