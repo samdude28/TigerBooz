@@ -45,6 +45,10 @@ System.out.println("user id"+userID);
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
 
+		//print out the featured liquor
+		out.println("<div id='socialmediawrap'><div id='socialmedia'><br>\n");
+		out.println(Liquor.getFeaturedLiquor()+"<br><br><br>\n");
+		
 		try {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
@@ -56,8 +60,8 @@ System.out.println("user id"+userID);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//start the table for the users own reviews 
-			out.println("<div id='socialmediawrap'><div id='socialmedia'><br>"
-					  + "<table id='keywords' cellspacing=0 cellpadding=0>"
+			out.println("<h2>Your Past Reviews</h2>"
+                      + "<table id='keywords' cellspacing=0 cellpadding=0>"
 					  + "<thead><tr>\n");
 			out.println("<th><span>Liquor Name</span></th>\n"
 					  + "<th><span>Your Review</span></th>\n</tr></thead><tr>\n");

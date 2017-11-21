@@ -55,7 +55,7 @@ System.out.println("user id"+userID);
 		
 			out.println("<div id='rightpanewrap'><div id='rightpane'>"); //600
 			out.println("&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
-					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></td>");
+					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'></td>");
 			out.println("<td><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>"
                       +  Liquor.getLiquorRatingImage(liquorID)+"</div><br><br>"
                       + "Known Sellers and Pricing</td></table>");

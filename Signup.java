@@ -11,16 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author Nathanael Bishop 
- * Simple login prototype intended for Apache & Tomcat integration 
- * 
- * SQL:
- *			CREATE DATABASE 4330;
- *			USE 4330;
- *			CREATE TABLE logins(name VARCHAR(30), password VARCHAR(30), email VARCHAR(30));		
- */
-
 public class Signup extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -46,9 +36,9 @@ public class Signup extends HttpServlet {
 		String emailInput = request.getParameter("email");
 
 		//Define the database parameters for this servlet
-		String DB_TABLE    = "user";
-		String DB_NAME     = "tigerbooz";
-		String DB_URL      = "jdbc:mysql://localhost:3306/"+DB_NAME;
+		String DB_TABLE = "user";
+		String DB_NAME  = "tigerbooz";
+		String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME+"?autoReconnect=true&relaxAutoCommit=true";
 
 		//try to write the data and close the connection
 		try {
@@ -61,7 +51,7 @@ public class Signup extends HttpServlet {
 			//create the statement to write the data to the database
 			Statement stmt=(Statement) conn.createStatement();
 			String sql = "INSERT INTO "+DB_TABLE+"(name, dob, email, password)" 
-					   + "VALUES ('"+nameInput+"','"+dobInput+"','"+emailInput+"','"+passInput+"';";
+					   + "VALUES ('"+nameInput+"','"+dobInput+"','"+emailInput+"','"+passInput+"');";
 
 			//send that statement to the db and commit
 			stmt.executeUpdate(sql);
@@ -91,7 +81,7 @@ System.out.println("closed connections in signup");
 			response.sendRedirect("Home");
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			out.println("<h1>Database Error</h1>");
+			e.printStackTrace();
 		}
 		//close out the html tags
 		out.println("</body></html>");

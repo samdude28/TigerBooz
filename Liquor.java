@@ -296,8 +296,98 @@ System.out.println("user id"+userID);
 		}
 		
 		return liquorName;
-}
+    }
 	
+    /**
+     * This method will pull a random Liquor from the database and output a string
+     *   that contains all the HTML needed to print a self contained table 
+     * @return the formatted string containing a table of 1 random liquor
+     */
+    public static String getFeaturedLiquor() {
+    	//initialize the String to be returned and the table we'll be accessing
+    	String featuredLiquor="";
+		String DB_TABLE    = "liquor";
+
+		//start the table  
+		featuredLiquor += "<table id='keywords' cellspacing=0 cellpadding=0>";
+		
+		try {
+			//Open a connection to the database
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
+						
+			//Create and execute a query to look for one random liquor
+			stmt         = (Statement) conn.createStatement();
+			String sql   = "SELECT * FROM "+DB_TABLE+" ORDER BY RAND() LIMIT 1;";
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+			
+			//go through the ResultSet and print out all the values in the html table
+			int liquorID = 0;
+			if(rs.next()) {
+				liquorID = rs.getInt("id");
+				String liquorName=rs.getString("name");
+				featuredLiquor += "<tr><td><font color='#c507e6'>"+getLiquorNameByID(liquorID)+"</font><br>"
+                               +  "<form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
+						       +  "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
+						       +  "<input type='hidden' name='liquorName' value='"+liquorName+"'>\n"
+			                   +  "<input type='image' src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='84' height='210' alt='"+liquorName+"'>"
+			                   +  "</form></td>\n";
+				featuredLiquor += "<td>"+rs.getString("name")+"<br>\n"
+			                   +  "$"+getLiquorPrice(liquorID)+"</td>\n"
+			                   +  "<td>"+Liquor.getLiquorRatingImage(liquorID)+"<br>\n"
+			                   +  "Number of Reviews: "+getNumReviews(liquorID)+"</td></tr></table>\n";
+			}
+			//close all the connections
+	 		if(rs != null)
+	 			rs.close();
+	 		if(stmt != null) 
+ 				stmt.close();
+	 		if(conn != null)
+	 			conn.close();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+		}
+    	return featuredLiquor;
+    }
+    
+    /**
+     * counts the number of times a particular liquor has been reviewed
+     * @param liquorID the liquor to count number of reviews
+     * @return the number of reviews that liquor has
+     */
+    public static int getNumReviews(int liquorID) {
+    	int numReviews  = 0;
+    	String DB_TABLE = "review";
+    	
+		try {
+			//Open a connection to the database
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
+						
+			//Create and execute a query to look for all the reviews with that liquorID
+			stmt         = (Statement) conn.createStatement();
+			String sql   = "SELECT COUNT(*) FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+";";
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+			
+			//grab the results of the query, thats the number of rows for that liquorID
+			if(rs.next()) 
+				numReviews=rs.getInt(1);
+			
+			//close all the connections
+	 		if(rs != null)
+	 			rs.close();
+	 		if(stmt != null) 
+ 				stmt.close();
+	 		if(conn != null)
+	 			conn.close();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+		}
+    	return numReviews;
+    }
+    
 	public Liquor() {
         super();
     }

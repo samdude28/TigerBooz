@@ -177,7 +177,7 @@ public class Review extends HttpServlet {
 			
 			//grab the review string and convert the reviewer's ID into their name
 			if(rs.next()) { 
-System.out.println(rs.getInt("user_id")+"user id in review");
+System.out.println(rs.getInt("user_id")+" user id in review");
 				oneLiquorReview+="<td>"+rs.getString("review")+"</td>";
 		        oneLiquorReview+="<td>"+User.getUserNameByID(rs.getInt("user_id"));
 				oneLiquorReview+="<td>"+Liquor.getLiquorRatingImage(liquorID, rs.getInt("user_id"))+"</td></tr>";
