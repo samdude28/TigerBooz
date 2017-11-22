@@ -62,15 +62,12 @@ public class Signup extends HttpServlet {
 				        "<b>You're registered with email</b>: "+emailInput+"\n");
 
 			int userID = User.getUserIDByName(nameInput, emailInput);
-if(userID==0)
-	System.out.println("user ID 0");
 			
 			//close all the connections to the db
 	 		if(stmt != null) 
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in signup");	 		
 	 		
 			//create the login token cookie
 			Cookie loginCookie = new Cookie ("TigerBoozID", Integer.toString(userID));

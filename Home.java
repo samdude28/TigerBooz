@@ -37,10 +37,10 @@ public class Home extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 
-		//get the users ID number
+		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
-//todo important: if login cookie isn't valid boot the user to the login screen
-System.out.println("user id"+userID);		
+		if(userID==0)
+			response.sendRedirect("http://52.26.169.0");
 
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);

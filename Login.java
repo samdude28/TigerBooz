@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Nathanael Bishop 
  * TigerBooz login servlet 
- * 		
- * The starting page for TigerBooz is http://52.26.169.0
  */
 
 public class Login extends HttpServlet {
@@ -80,7 +78,6 @@ System.out.println(userID+" in login");
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in login");			
 
 			//The user only gets this far if name and password not found
 			//set the file type, print writer, and declare the document html type

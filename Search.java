@@ -21,14 +21,19 @@ public class Search extends HttpServlet {
 	private static final String DB_URL         = "jdbc:mysql://localhost:3306/"+DB_NAME;
 	private PrintWriter out;
 	private Connection conn = null;
-	private Statement  stmt = null;       
+	private Statement  stmt = null;
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//set the file type and print writer
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 
-		//get the users ID number, setup a temp variable for the liquor ID number, and init a counter
+		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
+		if(userID==0)
+			response.sendRedirect("http://52.26.169.0");
+
+		//setup a temp variable for liquor ID number and a counter
 		int liquorID;
 		int count=0;
 
@@ -80,7 +85,6 @@ public class Search extends HttpServlet {
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-System.out.println("closed connections in search");			
 
 			//finally close out the html tags
 			out.println("</body></html>");

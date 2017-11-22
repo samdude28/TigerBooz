@@ -29,8 +29,10 @@ public class Review extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 		
-		//get the users ID number
+		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
+		if(userID==0)
+			response.sendRedirect("http://52.26.169.0");
 
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
@@ -152,6 +154,13 @@ public class Review extends HttpServlet {
 		return false;
 	}
 	
+	/**
+	 * Given the liquor's unique ID, create a self contained table in HTML that contains one random review
+	 *   that when clicked sends the user to the full list of that particular liquor's reviews
+	 * @param liquorID the number that uniquely identifies a particular liquor
+	 * @param userID the user who is looking at the reviews, only used to be passed as form data
+	 * @return a String that contains a self contained HTML table
+	 */
 	public static String printOneReview(int liquorID, int userID) {
 		//initialize the random review string and get the users name
 		String oneLiquorReview = "";
@@ -177,7 +186,6 @@ public class Review extends HttpServlet {
 			
 			//grab the review string and convert the reviewer's ID into their name
 			if(rs.next()) { 
-System.out.println(rs.getInt("user_id")+" user id in review");
 				oneLiquorReview+="<td>"+rs.getString("review")+"</td>";
 		        oneLiquorReview+="<td>"+User.getUserNameByID(rs.getInt("user_id"));
 				oneLiquorReview+="<td>"+Liquor.getLiquorRatingImage(liquorID, rs.getInt("user_id"))+"</td></tr>";
@@ -202,6 +210,12 @@ System.out.println(rs.getInt("user_id")+" user id in review");
 		return oneLiquorReview;
 	}
 	
+	/**
+	 * Takes an array of cookies and looks for one that contains TigerBoozLiquorID, signifying that
+	 *   cookie contains the liquor's unique ID number.
+	 * @param cookies an array of cookies
+	 * @return the liquor's unique ID
+	 */
 	private int getLiquorIDFromCookie(Cookie[] cookies){
 		int liquorID = 0;
 		

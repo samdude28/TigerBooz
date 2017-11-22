@@ -31,17 +31,25 @@ public class ShowIndividualLiquor extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 
-		//get the users ID number
+		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
-//todo important: if login cookie isn't valid boot the user to the login screen
-System.out.println("user id"+userID);		
+		if(userID==0)
+			response.sendRedirect("http://52.26.169.0");
 
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
 
 		//get the liquor ID and name from the http form post
-		int liquorID = Integer.parseInt(request.getParameter("liquorID"));
+		int liquorID=0;
+		try {
+			liquorID = Integer.parseInt(request.getParameter("liquorID").trim());
+		} catch (NumberFormatException nfe) {
+			System.out.println(nfe.getMessage());
+		}
+
+		//get the liquor name and setup the iframe for the Google Map integration
 		String liquorName = request.getParameter("liquorName");
+		String iframe="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d55049.33166631953!2d-91.13767542879442!3d30.41956442503378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s"+Liquor.getLiquorCategoryByID(liquorID)+"!5e0!3m2!1sen!2sus!4v1511378188658";
 		
 		try {
 			//Open a connection to the database
@@ -52,24 +60,26 @@ System.out.println("user id"+userID);
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-		
-			out.println("<div id='rightpanewrap'><div id='rightpane'>"); //600
-			out.println("&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
-					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'></td>");
+			out.println("<div id='rightpanewrap'><div id='rightpane'>\n"); //600
+			out.println("<br>&nbsp;&nbsp;&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
+					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'><br><br>&nbsp;</td>");
 			out.println("<td><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>"
-                      +  Liquor.getLiquorRatingImage(liquorID)+"</div><br><br>"
-                      + "Known Sellers and Pricing</td></table>");
+                      +  Liquor.getLiquorRatingImage(liquorID)+"<br><br>"
+                      + "Average Price - $"+Liquor.getLiquorPrice(liquorID)+"<br><br>"
+                      + "<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
+                      + "</iframe></div></td></table>\n");
 			
-/**			out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>" 
-			          + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></div></div>"); //360
-	        out.println("<div id='ratingswrap'><div id='ratings'><p>"+Liquor.getLiquorRating(liquorID)+"</p></div></div>"); //100
+/**	out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>" 
+	          + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></div></div>"); //360
+out.println("<div id='ratingswrap'><div id='ratings'><p>"+Liquor.getLiquorRating(liquorID)+"</p></div></div>"); //100
 
-	        out.println("<div id='nameofalcwrap'><div id='nameofalc'><p>"+liquorName+"</p></div></div>"); //200
-	        out.println("<div id='commentswrap'><div id='comments'><p>TODO: Known sellers and pricing</p></div></div>"); //220
-	        **/
+out.println("<div id='nameofalcwrap'><div id='nameofalc'><p>"+liquorName+"</p></div></div>"); //200	        out.println("<div id='commentswrap'><div id='comments'><p>TODO: Known sellers and pricing</p></div></div>"); //220
+**/
+                      
 	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p></div></div>"); //600
 	        
-	        out.println("<div id='socialmediawrap'><div id='socialmedia'><p>Social Media postings here</p></div></div>");
+	        out.println("<div id='socialmediawrap'><div id='socialmedia'>"
+	        		  + "<p>"+SocialMedia.getSocialMediaButtons(liquorID)+"</p></div></div>");
 	
 
 		

@@ -32,10 +32,10 @@ public class Liquor extends HttpServlet {
 		//set the database table that this method will use
 		String DB_TABLE    = "liquor";
 
-		//get the users ID number
+		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
-//todo important: if login cookie isn't valid boot the user to the login screen
-System.out.println("user id"+userID);		
+		if(userID==0)
+			response.sendRedirect("http://52.26.169.0");
 
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
@@ -44,12 +44,13 @@ System.out.println("user id"+userID);
 		String liquorCategory = request.getParameter("liquorCategory");
 				
 		//start the table to show all the liquors of this type 
-		out.println("<div id='rightpanewrap'><div id='rightpane'><br>"
-				  + "<table id='keywords' cellspacing=0 cellpadding=0>"
+		out.println("<div id='rightpanewrap'><div id='rightpane'><div id='wrapper'><br>"
+				  + "<table id='keywords' cellspacing='0' cellpadding='0'>"
 				  + "<thead><tr>\n");
-		out.println("<th><span>Liquor Name</span></th>\n"
+		out.println("<th><span>&nbsp;</span></th>\n"
+				  + "<th><span>Liquor Name</span></th>\n"
 				  + "<th><span>Average Price</span></th>\n"
-				  + "<th><span>Average Rating</span></th></tr></thead><tr>\n" );
+				  + "<th><span>Average Rating</span></th></tr></thead>\n" );
 		
 		try {
 			//Open a connection to the database
@@ -66,17 +67,17 @@ System.out.println("user id"+userID);
 			while(rs.next()) {
 				liquorID = rs.getInt("id");
 				//for readability each table cell get it's own Out statement
-				out.println("<tr><td><font color='#c507e6'>"+getLiquorNameByID(liquorID)+"</font><br>"
-                          + "<form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
-						  + "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
+				out.println("<tr><td><form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>\n"
+						  + "<input type='hidden' name='liquorID' value='"+liquorID+"'>\n"
 						  + "<input type='hidden' name='liquorName' value='"+rs.getString("name")+"'>\n"
-			              + "<button type='submit'>"+rs.getString("name")+"</button></form></td>\n");
-				out.println("<td>"+getLiquorPrice(liquorID)+"</td>\n");
+			              + "<input type=image src='http://52.26.169.0/pictures/play.png'></form></td>");
+				out.println("<td>"+getLiquorNameByID(liquorID)+"</td>");
+				out.println("<td>"+getLiquorPrice(liquorID)+"</td>");
 			    out.println("<td>"+Liquor.getLiquorRatingImage(liquorID)+"</td></tr>\n");
 			}
 			
 			//close out the html table tag
-			out.println("</tr></table>\n");
+			out.println("</tr></table></div>\n");
 			
 			//close all the connections to the db
 	 		if(rs != null)
@@ -266,7 +267,7 @@ System.out.println("user id"+userID);
 	
     public static String getLiquorNameByID(int liquorID) {
 		//initialize the liquorName and DB_TABLE variables
-		String liquorName="";
+		String liquorName  = "";
 		String DB_TABLE    = "liquor";
 		
     	try {
@@ -296,6 +297,45 @@ System.out.println("user id"+userID);
 		}
 		
 		return liquorName;
+    }
+    
+    /**
+     * Send this method a liquor's unique ID and it will return the liquor's category
+     * @param liquorID the liquor to be searched for
+     * @return the name of the liquors category
+     */
+    public static String getLiquorCategoryByID(int liquorID) {
+		//initialize the liquorName and DB_TABLE variables
+    	String liquorCategory = "";
+		String DB_TABLE       = "liquor";
+		
+    	try {
+	    	//Open a connection to the database
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
+	
+			//Create and execute a query to grab the liquor's category
+			String sql   = "SELECT category FROM "+DB_TABLE+" WHERE id="+liquorID+";";
+			stmt         = (Statement) conn.createStatement();
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+			
+			//if there were results, set the name for that record 
+			if(rs.next())
+				liquorCategory = rs.getString("category");
+			
+			//close all the connections
+	 		if(rs != null)
+	 			rs.close();
+	 		if(stmt != null) 
+ 				stmt.close();
+	 		if(conn != null)
+	 			conn.close();
+		}
+		catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return liquorCategory;
     }
 	
     /**

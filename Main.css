@@ -1,0 +1,220 @@
+html {    
+    background: url('http://52.26.169.0/pictures/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    overflow-y: scroll; 
+}
+
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color:#ffffff
+
+}
+
+p {
+    padding: 10px;
+}
+
+#keywords table { 
+    border-collapse: collapse;
+    border-spacing: 0; 
+    border: 0px solid #000000;
+    padding-right: 0px;
+}
+
+
+td+td, th+th {
+    border-left: 1px solid #EEEEEE;
+}
+
+tr+tr {
+    border-top: 1px solid #EEEEEE;
+}
+
+#noBorder {
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+    border-top: 0px;
+    border: 0px !important;
+    border-collapse: collapse !important;
+    padding-right: 0px;
+    padding-left: 0px;
+    border:none !important;
+    border-spacing: 0;
+}
+
+#noborder td {
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+    border-top: 0px;
+    border: 0px !important;
+    border-collapse: collapse !important;
+    border:none !important;
+}
+
+#keywords thead {
+    cursor: pointer;
+}
+
+#keywords td {
+    padding-right: 5px;
+    padding-left:  5px;
+}
+
+#keywords thead tr th span { 
+    padding-right: 10px;
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+}
+
+#keywords thead tr th { 
+    font-weight: bold;
+    padding: 8px 10px;
+    padding-left: 10px;
+}
+
+#wrapper {
+    margin: 0 auto;
+    width: 900px;
+}
+
+#headerwrap {
+    width: 550px;
+    float: center;
+    margin: 0 auto;
+}
+
+#header {
+    height: 75px;
+    border-radius: 10px;
+    border: 0px solid #ffffff;
+    margin: 5px;
+}
+
+#navigationwrap {
+    width: 1000px;
+    float: left;
+    margin: 0 auto;
+}
+
+#navigation {
+    height: 40px;
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#alcoholimagewrap {
+    width: 300px;
+    float: left;
+    margin: 0 auto;
+}
+
+#alcoholimage {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#nameofalcwrap {
+    width: 200px;
+    float: left;
+    margin: 0 auto;
+}
+
+#nameofalc {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#ratingswrap {
+    width: 230px;
+    float: left;
+    margin: 0 auto;
+}
+
+#ratings {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#commentswrap {
+    width: 220px;
+    float: left;
+    margin: 0 auto;
+}
+
+#comments {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+
+#rightpanewrap {
+    width: 720px;
+    float: left;
+    margin: 0 auto;
+}
+
+#rightpane {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#socialmediawrap {
+    width: 720px;
+    float: left;
+    margin: 0 auto;
+}
+
+#socialmedia {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
+#leftcolumnwrap {
+    width: 150px;
+    float: left;
+    margin: 0 auto;
+}
+
+#leftcolumn {
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+    align: center;
+}
+
+#footerwrap {
+    width: 500px;
+    float: left-center;
+    margin: 0 auto;
+    clear: both;
+}
+
+#footer {
+    height: 40px;
+    background: #c507e6;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    margin: 5px;
+}
+
