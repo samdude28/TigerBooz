@@ -43,7 +43,7 @@ public class Review extends HttpServlet {
 		 */
 		int liquorID = getLiquorIDFromCookie(request.getCookies());
 		
-		//if the serviceName isnt blank, a cookie was found so find out service type
+		//if the liquor ID is 0, no cookie was found, so pull liquorID from form data
 		if(liquorID==0) 
 			liquorID = Integer.parseInt(request.getParameter("liquorID"));
 
@@ -91,8 +91,8 @@ public class Review extends HttpServlet {
 		createOrEditReview(userID, liquorID);
 	}
 
-	private Boolean createOrEditReview(int userID, int liquorID) {
-/**		try {
+	private void createOrEditReview(int userID, int liquorID) {
+		try {
 			//Open a connection
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
@@ -100,10 +100,9 @@ public class Review extends HttpServlet {
 			//create the statement that will be used to query the DB
 			stmt = (Statement) conn.createStatement();
 			
-			//look for any reviews from this user for this service name
+			//look for any reviews from this user for this liquor
 			String sql = "SELECT * FROM "+DB_TABLE+" WHERE login_name='"+name+"'"
-					   + "AND storage_name='"+serviceName+"'"
-					   + "OR iaas_name='"+serviceName+"';";
+					   + "AND liquor_id="+liquorID+");";
 
 			//now execute the query into a resultset
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
@@ -112,19 +111,13 @@ public class Review extends HttpServlet {
 			out.println("<br><br><br><br><br>\n");
 			out.println("<table><tr><td>");
 			out.println("<form action='52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
-			out.println("<label>Your review of this service:</label><br>"
-			          + "<input type='hidden' name='name' value="+name+"> \n"
-					  + "<input type='hidden' name='serviceName' value='"+serviceName+"'> \n");
-
-			//include in form which table we want to add this review to
-			if(isStorage) 
-				out.println("<input type='hidden' name='serviceType' value='storage'>\n");
-			else
-				out.println("<input type='hidden' name='serviceType' value='iaas'>\n");
+			out.println("<label>Your review of this liquor:</label><br>"
+			          + "<input type='hidden' name='userID' value="+usedID+"> \n"
+					  + "<input type='hidden' name='liquorID' value='"+liquorID+"'> \n");
 			
 			
 			//if user has left a review put it in the form for editing
-			out.println("<textarea name='reviewText' class='bigtextbox' maxlength='250'>");
+			out.println("<textarea name='reviewText' class='bigtextbox' maxlength='300'>");
 			if(rs.next()) { 
 				out.println(rs.getString("text")+"</textarea>\n");
 		        out.println("<input type='hidden' name='hasExistingRecord' value='true'>");
@@ -150,8 +143,6 @@ public class Review extends HttpServlet {
 		catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
- **/
-		return false;
 	}
 	
 	/**
