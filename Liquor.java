@@ -218,79 +218,87 @@ public class Liquor extends HttpServlet {
 		return thisUserRating;
 	}
 	
+	/**
+	 *
+	 */
 	public static String getLiquorRatingImage(int liquorID) {
 		String liquorImage = "<table><tr>";
 		float liquorRating = getLiquorRating(liquorID);
-		int imageCounter = 1;
+		float imageCounter = 1.0;
 System.out.println(liquorRating);		
 		
 		//for each rating over 1.0 add a full star to the string
 		while (liquorRating >= 1.0) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			liquorRating--;
 			imageCounter++;
 		}
-System.out.println(liquorRating);		
+System.out.println(imageCounter);		
 		
 		//now pick the correct image with 25% 50% or 75% of a "star"
 		if (liquorRating > 0.74) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star75.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star75.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
 		else if (liquorRating > 0.49) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 					    +  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star50.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star50.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
 		else if (liquorRating > 0.25) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star25.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star25.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
 		
 		while(imageCounter<5) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
-System.out.println(liquorRating);		
-		//if no ratings were found, return the no ratings image
-		if(liquorImage.equals(""))
-				return "<img src='http://52.26.169.0/pictures/norating.jpg'>";
+System.out.println(imageCounter);		
+
 		return liquorImage+"</tr></table>";
 	}
 	
+	/**
+	 * Build a string that contains HTML to print out a particular liquor's rating that one particular user has
+	 *   left.
+	 */
 	public static String getLiquorRatingImage(int liquorID, int userID) {
 		String liquorImage = "";
 		float liquorRating = getLiquorRating(liquorID, userID);
 		
 		//for each rating over 1.0 add a full star to the string
 		while (liquorRating > 1.0) {
-			liquorImage += "<img src='http://52.26.169.0/pictures/star.jpg'>";
+			liquorImage += "<img src='http://52.26.169.0/pictures/star.jpg' width='20' height='25'>";
 			liquorRating--;
 		}
 		
 		//now pick the correct image with 25% 50% or 75% of a "star"
 		if (liquorRating > 0.74)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg'>";
+			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg' width='20' height='25'>";
 		else if (liquorRating > 0.49)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg'>";
+			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg' width='20' height='25'>";
 		else if (liquorRating > 0.25)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg'>";
+			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg' width='20' height='25'>";
 		 
 		//if no ratings were found, return the no ratings image
 		if(liquorImage.equals(""))
-				return "<img src='http://52.26.169.0/pictures/norating.jpg'>";
+				return "<img src='http://52.26.169.0/pictures/norating.jpg' width='20' height='25'>";
 		return liquorImage;
 	}
 	
+	/**
+	 *
+	 */
     public static String getLiquorNameByID(int liquorID) {
 		//initialize the liquorName and DB_TABLE variables
 		String liquorName  = "";

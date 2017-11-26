@@ -63,13 +63,18 @@ public class ShowIndividualLiquor extends HttpServlet {
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
+			//setup the liquors picture
 			out.println("<div id='rightpanewrap'><div id='rightpane'>\n"); //600
 			out.println("<br>&nbsp;&nbsp;&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
 					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'><br><br>&nbsp;</td>");
-			out.println("<td><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>"
-                      +  Liquor.getLiquorRatingImage(liquorID)+"<br><br>"
-                      + "Average Price - $"+Liquor.getLiquorPrice(liquorID)+"<br><br>"
-                      + "<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
+			//liquor name
+			out.println("<td style='text-align:center;'><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>");
+			//liquor rating picture and allow user to leave their own rating
+			out.println(Liquor.getLiquorRatingImage(liquorID)+"<br><br>");
+			//liquor average price and allow user to input a price
+			out.println("Average Price - $"+Liquor.getLiquorPrice(liquorID));
+			//google maps showing cheapest place to get this particular liquor
+			out.println("<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
                       + "</iframe></div></td></table>\n");
 			
 /**	out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>" 
