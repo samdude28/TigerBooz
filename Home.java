@@ -12,28 +12,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Nathanael Bishop 
- * This is a full featured 3-tier website that contains static content (Apache), dynamic content (Tomcat), 
- *   and a database (MySQL).  These Java Servlets pull static content and database content to present
- *   the user with a ratings and review website called TigerBooz. 
- *   https://www.google.com/maps/search/cheap+liquor/@30.4300052,-91.1310276,12.5z
+ * @author Nathanael Bishop (of this particular Java servlet)
+ * TigerBooz  CSC 4330 Project
+ * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
+ *   read and share ratings, reviews and prices of liquors. 
  */
 
 public class Home extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String DB_TABLE       = "review";
-	private static final String DB_NAME        = "tigerbooz";
-	private static final String DB_URL         = "jdbc:mysql://localhost:3306/"+DB_NAME;
+	private static final String DB_TABLE = "review";
+	private static final String DB_NAME  = "tigerbooz";
+	private static final String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME;
 	private PrintWriter out;
 	private Connection conn = null;
 	private Statement  stmt = null;
 	
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * This servlet displays the users home page which consists of a random featured liquor as well as a listing
+	 *   of all the users past reviews.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		//set the file type and print writer
+		//setup the PrintWriter response to be browser HTML compatible
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 
@@ -73,9 +72,6 @@ public class Home extends HttpServlet {
 				out.println("<td>"+rs.getString("review")+"</td>\n</tr>\n");
 			}
 			
-			//close out the table tags and the div wrapper
-			out.println("</table><br></div></div>\n");
-			
 			//close all the connections
 	 		if(rs != null)
 	 			rs.close();
@@ -83,20 +79,24 @@ public class Home extends HttpServlet {
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 
-		//finally close out the html tags
-		out.println("<br></div></body></html>");
+		//finally close out all the html tags
+		out.println("</table><br></div></div>\n<br></div></body></html>");
 	}
-	
-	
+		
+    /**
+	 * boilerplate servlet code
+	 */
     public Home() {
         super();
     }
-	
+
+	/**
+	 * boilerplate servlet code
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request,response);
 	}

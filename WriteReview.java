@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Nathanael Bishop 
+ * @author Nathanael Bishop (of this particular Java servlet)
+ * TigerBooz  CSC 4330 Project
+ * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
+ *   read and share ratings, reviews and prices of liquors. 
  */
 
 public class WriteReview extends HttpServlet {
@@ -26,6 +29,7 @@ public class WriteReview extends HttpServlet {
 	 * Servlet accepts a users new or edited review and makes the neccessary changes to the database
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//setup the PrintWriter response to be browser HTML compatible
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
 		
@@ -120,5 +124,4 @@ public class WriteReview extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request,response);
 	}
-
 }

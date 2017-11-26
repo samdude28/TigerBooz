@@ -13,25 +13,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Liquor
+ * @author Nathanael Bishop (of this particular Java servlet)
+ * TigerBooz  CSC 4330 Project
+ * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
+ *   read and share ratings, reviews and prices of liquors. 
  */
+
 public class Liquor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	//Define the database parameters for this servlet
 	private final static String DB_NAME     = "tigerbooz";
 	private final static String DB_URL      = "jdbc:mysql://localhost:3306/"+DB_NAME;   
 	private static Connection conn;
 	private static Statement stmt;
 	private static PrintWriter out;
 	
+	/**
+	 * This servlet displays all the liquors in a particular category. That category is set by whatever calling
+	 *   method or HTML form post.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		//set the file type and print writer for user output
+		//set response type to be UTF-8 standard and start the PrintWriter
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 		
 		//set the database table that this method will use
-		String DB_TABLE    = "liquor";
+		String DB_TABLE = "liquor";
 
 		//get the users ID number, if it's not found, boot them to the login screen
 		int userID = User.getUserIDByCookie(request.getCookies());
@@ -63,11 +69,13 @@ public class Liquor extends HttpServlet {
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE category='"+liquorCategory+"';";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-			//go through the ResultSet and print out all the values in the html table
+			//initialize a temp variable so we dont have to keep calling rs.getInt("id") (and readability)
 			int liquorID = 0;
+
+			//go through the ResultSet and print out all the values in the html table
 			while(rs.next()) {
 				liquorID = rs.getInt("id");
-				//for readability each table cell get it's own Out statement
+				//for readability each table cell get it's own out statement
 				out.println("<tr><td><form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>\n"
 						  + "<input type='hidden' name='liquorID' value='"+liquorID+"'>\n"
 						  + "<input type='hidden' name='liquorName' value='"+rs.getString("name")+"'>\n"
@@ -81,15 +89,13 @@ public class Liquor extends HttpServlet {
 			out.println("</tr></table></div>\n");
 			
 			//close all the connections to the db
-	 		if(rs != null)
+	 		if(rs   != null)
 	 			rs.close();
 	 		if(stmt != null) 
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-			
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}		
 
@@ -97,12 +103,19 @@ public class Liquor extends HttpServlet {
 		out.println("<br></div></body></html>");
 	}
 	
+	/**
+	 * Given a liquor ID number, return the average price of that liquor
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @return the price of the particular liquor, as a float
+	 */
 	public static float getLiquorPrice(int liquorID) {
+		//the database table this method will be using
+		String DB_TABLE = "price";
+
 		//initialize the variables that will be used to calculate the average price
 		float totalPrice = 0;
-		int count = 0;
-		
-		String DB_TABLE = "price";
+		int count        = 0;
+
 		try {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
@@ -120,15 +133,13 @@ public class Liquor extends HttpServlet {
 			}
 
 			//close all the connections to the db
-	 		if(rs != null)
+	 		if(rs   != null)
 	 			rs.close();
 	 		if(stmt != null) 
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-	
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}		
 		
@@ -136,16 +147,23 @@ public class Liquor extends HttpServlet {
 		if(count==0)
 			return 0;
 		
-		//return the average price rounded to 2 digits
+		//else return the average price rounded to 2 digits
 		return (float) ((float)Math.round(totalPrice / count * 100.0) / 100.0);		
 	}
 	
+	/**
+	 * Given a liquor ID number, return the average rating of that liquor
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @return the rating of the particular liquor, as a float
+	 */
 	public static float getLiquorRating(int liquorID) {
+		//the database table this method will be using
+		String DB_TABLE = "rating";
+
 		//initialize the variables that will be used to calculate the average rating
 		float totalRating = 0;
-		int count = 0;
+		int count         = 0;
 		
-		String DB_TABLE = "rating";
 		try {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
@@ -155,6 +173,7 @@ public class Liquor extends HttpServlet {
 			stmt         = (Statement) conn.createStatement();
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
+
 			//add up all the ratings in the query so we can get an average rating
 			if(rs != null)
 				while(rs.next()) {
@@ -163,15 +182,13 @@ public class Liquor extends HttpServlet {
 				}
 
 			//close all the connections to the db
-	 		if(rs != null)
+	 		if(rs   != null)
 	 			rs.close();
 	 		if(stmt != null) 
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-	
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}		
 		
@@ -179,13 +196,23 @@ public class Liquor extends HttpServlet {
 		if(count==0)
 			return 0;
 		
-		//return the average rating rounded to 1 digit
+		//else return the average rating rounded to 1 digit
 		return (float) ((float)Math.round(totalRating / count * 10.0) / 10.0);
 	}
 
+	/**
+	 * Overloaded method getLiquorRating - Given a liquor ID number, return the average rating of that liquor 
+	 *   for a particular user
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @param userID the uniqur ID number of a user
+	 * @return the users rating of the particular liquor, as a float
+	 */
 	public static float getLiquorRating(int liquorID, int userID) {
+		//the database table this method will be using
+		String DB_TABLE = "rating";
+
+		//initialize the users rating to 0 in case they haven't rated the product yet
 		float thisUserRating = 0;
-		String DB_TABLE    = "rating";
 		
 		try {
 			//Open a connection to the database
@@ -202,15 +229,13 @@ public class Liquor extends HttpServlet {
 				thisUserRating = rs.getFloat("rating");
 
 			//close all the connections to the db
-	 		if(rs != null)
+	 		if(rs   != null)
 	 			rs.close();
 	 		if(stmt != null) 
 				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-	
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}		
 		
@@ -219,57 +244,75 @@ public class Liquor extends HttpServlet {
 	}
 	
 	/**
-	 *
+	 * Given a liquor ID number, return a String that consists of a table of images indicating graphically 
+	 *   how this liquor has been rated by other users. Additionally the user can click on the images to
+	 *   indicate how they would like to rate the liquor. The leftmost image indicates the user wants to rate
+	 *   at a 1, while the rightmost indicates a desired rating of 5
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @return a String consisting of a fully formated HTML table with clickable images of a rated liquor
 	 */
 	public static String getLiquorRatingImage(int liquorID) {
-		String liquorImage = "<table class='centered'><tr>";
+		//start the HTML String and the fraction of a whole number image we'll use later
+		String liquorImage        = "<table class='centered'><tr>";
+		String starRatingFraction = "star25.jpg";
+
+		//this float is counted down until it reaches 0, for each count an image is displayed
 		float liquorRating = getLiquorRating(liquorID);
+
+		//this float keeps track of how many images have been printed, part of the user rating form
 		float imageCounter = 1.0f;
 		
-		//for each rating over 1.0 add a full star to the string
+		//countdown until liquorRating is less than a whole number
 		while (liquorRating >= 1.0) {
+						//add the form for the user to leave their own rating
 			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
+						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+						//for each rating over 1.0 add a full star image the string
 					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			liquorRating--;
 			imageCounter++;
 		}
 		
-		//now pick the correct image with 25% 50% or 75% of a "star"
-		if (liquorRating > 0.74) {
+		//now pick the correct fraction image with 50% or 75% of a "star"
+		if (liquorRating > 0.74) 
+			starRatingFraction = "star75.jpg";
+		else if (liquorRating > 0.49) 
+			starRatingFraction = "star50.jpg";
+
+		//if there's a fraction above ~1/4, display the appropriate image and form
+		if (liquorRating > 0.24) {
 			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
+						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star75.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
+						//display the appropriate fraction image
+				        +  "<input type='image' src='http://52.26.169.0/pictures/"+starRatingFraction+"' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
-		else if (liquorRating > 0.49) {
+
+		//print all empty stars until we've reached the maximum rating possible, 5 stars.
+		while(imageCounter <= 5) {
 			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
-					    +  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star50.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
-			imageCounter++;
-		}
-		else if (liquorRating > 0.25) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
+						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star25.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
-			imageCounter++;
-		}
-		
-		while(imageCounter<=5) {
-			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
-						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+						//display empty star
 				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
 
+		//finally return the entire String along with the HTML tags necessary to end the table 
 		return liquorImage+"</tr></table>";
 	}
 	
 	/**
 	 * Build a string that contains HTML to print out a particular liquor's rating that one particular user has
 	 *   left.
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @param userID the unique ID number of a particular user
+	 * @return a String consisting of HTML that displays 5 images in a row
 	 */
 	public static String getLiquorRatingImage(int liquorID, int userID) {
+		//initialize the HTML String to be returned, and retrieve the users rating for this liquor
 		String liquorImage = "";
 		float liquorRating = getLiquorRating(liquorID, userID);
 		
@@ -284,17 +327,20 @@ public class Liquor extends HttpServlet {
 			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg' width='20' height='25'>";
 		else if (liquorRating > 0.49)
 			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg' width='20' height='25'>";
-		else if (liquorRating > 0.25)
+		else if (liquorRating > 0.24)
 			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg' width='20' height='25'>";
 		 
 		//if no ratings were found, return the no ratings image
 		if(liquorImage.equals(""))
 				return "<img src='http://52.26.169.0/pictures/norating.jpg' width='20' height='25'>";
+		//else return the HTML images String
 		return liquorImage;
 	}
 	
 	/**
-	 *
+	 * Retrieve a liquor's name from the database given the liquor's unique ID number
+	 * @param liquorID the unique ID number of a particular liquor
+	 * @return the liquors name as a String
 	 */
     public static String getLiquorNameByID(int liquorID) {
 		//initialize the liquorName and DB_TABLE variables
@@ -306,34 +352,34 @@ public class Liquor extends HttpServlet {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
 	
-			//Create and execute a query for this
+			//Create and execute a query to grab the only name attached to that ID
 			String sql   = "SELECT name FROM "+DB_TABLE+" WHERE id="+liquorID+";";
 			stmt         = (Statement) conn.createStatement();
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-			//if there were results, set the name for that record 
+			//if there were results, get the name for that record 
 			if(rs.next())
 				liquorName = rs.getString("name");
 			
 			//close all the connections
-	 		if(rs != null)
+	 		if(rs   != null)
 	 			rs.close();
 	 		if(stmt != null) 
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 		
+		//finally return the liquorName
 		return liquorName;
     }
     
     /**
      * Send this method a liquor's unique ID and it will return the liquor's category
      * @param liquorID the liquor to be searched for
-     * @return the name of the liquors category
+     * @return the name of the liquors category as a String
      */
     public static String getLiquorCategoryByID(int liquorID) {
 		//initialize the liquorName and DB_TABLE variables
@@ -361,25 +407,25 @@ public class Liquor extends HttpServlet {
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 		
+		//finally return the liquor's category
 		return liquorCategory;
     }
 	
     /**
      * This method will pull a random Liquor from the database and output a string
      *   that contains all the HTML needed to print a self contained table 
-     * @return the formatted string containing a table of 1 random liquor
+     * @return the formatted string containing an HTML table of 1 random liquor
      */
     public static String getFeaturedLiquor() {
     	//initialize the String to be returned and the table we'll be accessing
     	String featuredLiquor="";
 		String DB_TABLE    = "liquor";
 
-		//start the table  
+		//start the HTML table  
 		featuredLiquor += "<table id='keywords' cellspacing=0 cellpadding=0>";
 		
 		try {
@@ -392,8 +438,10 @@ public class Liquor extends HttpServlet {
 			String sql   = "SELECT * FROM "+DB_TABLE+" ORDER BY RAND() LIMIT 1;";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-			//go through the ResultSet and print out all the values in the html table
+			//temp variable so we don't have to call rs as much, and for readability
 			int liquorID = 0;
+
+			//go through the one value in the ResultSet and print out all the values in the html table
 			if(rs.next()) {
 				liquorID = rs.getInt("id");
 				String liquorName=rs.getString("name");
@@ -403,9 +451,8 @@ public class Liquor extends HttpServlet {
 						       +  "<input type='hidden' name='liquorName' value='"+liquorName+"'>\n"
 			                   +  "<input type='image' src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='84' height='210' alt='"+liquorName+"'>"
 			                   +  "</form></td>\n";
-				featuredLiquor += "<td>"+rs.getString("name")+"<br>\n"
-			                   +  "$"+getLiquorPrice(liquorID)+"</td>\n"
-			                   +  "<td>"+Liquor.getLiquorRatingImage(liquorID)+"<br>\n"
+				featuredLiquor += "<td>"+rs.getString("name")+"<br>\n$"+getLiquorPrice(liquorID)+"</td>\n";
+			    featuredLiquor += "<td>"+Liquor.getLiquorRatingImage(liquorID)+"<br>\n"
 			                   +  "Number of Reviews: "+getNumReviews(liquorID)+"</td></tr></table>\n";
 			}
 			//close all the connections
@@ -415,19 +462,20 @@ public class Liquor extends HttpServlet {
  				stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-			
 		} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 		}
+		//finally returned the HTML table containing the featured liquor
     	return featuredLiquor;
     }
     
     /**
      * counts the number of times a particular liquor has been reviewed
      * @param liquorID the liquor to count number of reviews
-     * @return the number of reviews that liquor has
+     * @return the number of reviews that liquor has as an int
      */
     public static int getNumReviews(int liquorID) {
+    	//initialize the number of reviews counter and the db table name for this method
     	int numReviews  = 0;
     	String DB_TABLE = "review";
     	
@@ -441,7 +489,7 @@ public class Liquor extends HttpServlet {
 			String sql   = "SELECT COUNT(*) FROM "+DB_TABLE+" WHERE liquor_id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-			//grab the results of the query, thats the number of rows for that liquorID
+			//grab the results of the query, that will be the number of rows for that liquorID
 			if(rs.next()) 
 				numReviews=rs.getInt(1);
 			
@@ -456,6 +504,7 @@ public class Liquor extends HttpServlet {
 		} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 		}
+		//finally return the number of reviews this liquor has received
     	return numReviews;
     }
     
@@ -463,24 +512,33 @@ public class Liquor extends HttpServlet {
 	 * Takes an array of cookies and looks for one that contains TigerBoozLiquorID, signifying that
 	 *   cookie contains the liquor's unique ID number.
 	 * @param cookies an array of cookies
-	 * @return the liquor's unique ID
+	 * @return the liquor's unique ID as an int
 	 */
 	public static  int getLiquorIDFromCookie(Cookie[] cookies){
+		//initialize the liquor ID to 0 in case none were found
 		int liquorID = 0;
 		
 		//look through the array of cookies for one named TigerBoozLiquorID
 		if(cookies != null)
 			for(Cookie cookie : cookies) 
+				//if found, grab the cookie value which is a String so we convert it to int
 				if(cookie.getName().equals("TigerBoozLiquorID"))
 					liquorID = Integer.parseInt(cookie.getValue());
 
+		//finally return the liquor's unique ID number
 		return liquorID;
 	}
-    
-	public Liquor() {
+    	
+	/**
+	 * boilerplate servlet code
+	 */
+    public Liquor() {
         super();
     }
-	
+
+	/**
+	 * boilerplate servlet code
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request,response);
 	}

@@ -5,8 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class SocialMedia
+ * @author Nathanael Bishop (of this particular Java servlet)
+ * TigerBooz  CSC 4330 Project
+ * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
+ *   read and share ratings, reviews and prices of liquors. 
  */
+
 public class SocialMedia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -32,22 +36,24 @@ public class SocialMedia extends HttpServlet {
 		return socialMediaButtons;
 	}
 	
+	/**
+	 * for future use	
+	 */
     public SocialMedia() {
         super();
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * for future use	
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * for future use	
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-
 }

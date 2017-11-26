@@ -12,22 +12,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class ShowIndividualLiquor
+ * @author Nathanael Bishop (of this particular Java servlet)
+ * TigerBooz  CSC 4330 Project
+ * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
+ *   read and share ratings, reviews and prices of liquors. 
  */
+
 public class ShowIndividualLiquor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	//Define the database parameters for this servlet
-	private final static String DB_NAME     = "tigerbooz";
-	private final static String DB_URL      = "jdbc:mysql://localhost:3306/"+DB_NAME;   
+	private final static String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME;   
+	private final static String DB_NAME  = "tigerbooz";
+	private final static String DB_TABLE = "liquor";
 	private static Connection conn;
 	private static Statement stmt;
 	private static PrintWriter out;
 
-
+	/**
+	 * This servlet takes HTML form post data that indicates which liquor a user wants to see more information on.
+	 *   It then displays an image of that liquor, the liquors name, the average ratings this liquor has received from
+	 *   other users on TigerBooz, an average price, a map to the cheapest places to find this liquor, a randomly chosen
+	 *   single review of this liquor (with the option to see more reviews), and finally present the user with links to
+	 *   this liquor's manufacturers social media pages.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String DB_TABLE = "liquor";
-
-		//set the file type and print writer
+		//setup the PrintWriter response to be browser HTML compatible
 		response.setContentType("text/html;charset=UTF-8");
 		out=response.getWriter();
 
@@ -39,15 +47,21 @@ public class ShowIndividualLiquor extends HttpServlet {
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
 
-		//get the liquor ID and name from cookie, values will be 0 and "" if no cookie found
+		/**
+		 * This method will be called from either a form post or a redirect so input can come
+		 *   from form data or a cookie.
+		 * Get the liquor ID and name from cookie, values will be 0 and "" if no cookie found
+		 */
 		int liquorID = Liquor.getLiquorIDFromCookie(request.getCookies());
 		String liquorName = Liquor.getLiquorNameByID(liquorID); 
 
 		//if the liquor ID is 0, no cookie was found, so pull liquorID and name from form data
 		if(liquorID==0) 
 			try {
-				liquorID = Integer.parseInt(request.getParameter("liquorID").trim());
+				//convert the liquorID string into an int and retrieve the liquor's name
+				liquorID   = Integer.parseInt(request.getParameter("liquorID").trim());
 				liquorName = request.getParameter("liquorName");
+			//occasionally a NFE error was occuring so this try/catch block was added
 			} catch (NumberFormatException nfe) {
 				System.out.println(nfe.getMessage());
 			}
@@ -59,7 +73,8 @@ public class ShowIndividualLiquor extends HttpServlet {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = (Connection) DriverManager.getConnection(DB_URL,"root","ilovepizza");
-						
+
+			//create the sql statement to find all matches with the same liquorID as the form or cookie input						
 			stmt         = (Statement) conn.createStatement();
 			String sql   = "SELECT * FROM "+DB_TABLE+" WHERE id="+liquorID+";";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
@@ -68,40 +83,49 @@ public class ShowIndividualLiquor extends HttpServlet {
 			out.println("<div id='rightpanewrap'><div id='rightpane'>\n"); //600
 			out.println("<br>&nbsp;&nbsp;&nbsp;<table id='noBorder' width=100%><tr><td style='text-align:center;'>"
 					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'><br><br>&nbsp;</td>");
-			//liquor name
+
+			//add liquor name
 			out.println("<td style='text-align:center;'><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>");
-			//liquor rating picture and allow user to leave their own rating
+
+			//add liquor rating picture and allow user to leave their own rating
 			out.println(Liquor.getLiquorRatingImage(liquorID)+"<br><br>");
-			//liquor average price and allow user to input a price
+
+			//add the liquor average price 
 			out.println("Average Price - $"+Liquor.getLiquorPrice(liquorID));
+
 			//google maps showing cheapest place to get this particular liquor
 			out.println("<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
                       + "</iframe></div></td></table>\n");
 			
+			//print one randomly chosen user review of this liquor
 	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p></div></div>"); //600
 	        
+			//print the social media links
 	        out.println("<div id='socialmediawrap'><div id='socialmedia'>"
 	        		  + "<p>"+SocialMedia.getSocialMediaButtons(liquorID)+"</p></div></div>");
 	
-
-		
-			//close all the connections
+			//close all the database connections
 	 		if(rs != null)
 	 			rs.close();
 	 		if(stmt != null) 
 					stmt.close();
 	 		if(conn != null)
 	 			conn.close();
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
+    /**
+	 * boilerplate servlet code
+	 */
     public ShowIndividualLiquor() {
         super();
     }
 
+	/**
+	 * boilerplate servlet code
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request,response);
 	}
