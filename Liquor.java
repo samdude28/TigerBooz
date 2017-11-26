@@ -222,10 +222,9 @@ public class Liquor extends HttpServlet {
 	 *
 	 */
 	public static String getLiquorRatingImage(int liquorID) {
-		String liquorImage = "<table><tr>";
+		String liquorImage = "<table class='centered'><tr>";
 		float liquorRating = getLiquorRating(liquorID);
-		float imageCounter = 1.0;
-System.out.println(liquorRating);		
+		float imageCounter = 1.0f;
 		
 		//for each rating over 1.0 add a full star to the string
 		while (liquorRating >= 1.0) {
@@ -235,7 +234,6 @@ System.out.println(liquorRating);
 			liquorRating--;
 			imageCounter++;
 		}
-System.out.println(imageCounter);		
 		
 		//now pick the correct image with 25% 50% or 75% of a "star"
 		if (liquorRating > 0.74) {
@@ -257,13 +255,12 @@ System.out.println(imageCounter);
 			imageCounter++;
 		}
 		
-		while(imageCounter<5) {
+		while(imageCounter<=5) {
 			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+imageCounter+"'>"
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
 				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
 			imageCounter++;
 		}
-System.out.println(imageCounter);		
 
 		return liquorImage+"</tr></table>";
 	}

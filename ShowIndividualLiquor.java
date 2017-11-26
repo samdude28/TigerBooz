@@ -39,19 +39,20 @@ public class ShowIndividualLiquor extends HttpServlet {
 		//display the website template, giving it the users name for personalization
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
 
-		//get the liquor ID and name from the http form post
+		//get the liquor ID and name from cookie, values will be 0 and "" if no cookie found
 		int liquorID = Liquor.getLiquorIDFromCookie(request.getCookies());
-		
-		//if the liquor ID is 0, no cookie was found, so pull liquorID from form data
+		String liquorName = Liquor.getLiquorNameByID(liquorID); 
+
+		//if the liquor ID is 0, no cookie was found, so pull liquorID and name from form data
 		if(liquorID==0) 
 			try {
 				liquorID = Integer.parseInt(request.getParameter("liquorID").trim());
+				liquorName = request.getParameter("liquorName");
 			} catch (NumberFormatException nfe) {
 				System.out.println(nfe.getMessage());
 			}
 
-		//get the liquor name and setup the iframe for the Google Map integration
-		String liquorName = request.getParameter("liquorName");
+		//setup the iframe for the Google Map integration
 		String iframe="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d55049.33166631953!2d-91.13767542879442!3d30.41956442503378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s"+Liquor.getLiquorCategoryByID(liquorID)+"!5e0!3m2!1sen!2sus!4v1511378188658";
 		
 		try {
@@ -77,13 +78,6 @@ public class ShowIndividualLiquor extends HttpServlet {
 			out.println("<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
                       + "</iframe></div></td></table>\n");
 			
-/**	out.println("<div id='alcoholimagewrap'><div id='alcoholimage'>" 
-	          + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg'></div></div>"); //360
-out.println("<div id='ratingswrap'><div id='ratings'><p>"+Liquor.getLiquorRating(liquorID)+"</p></div></div>"); //100
-
-out.println("<div id='nameofalcwrap'><div id='nameofalc'><p>"+liquorName+"</p></div></div>"); //200	        out.println("<div id='commentswrap'><div id='comments'><p>TODO: Known sellers and pricing</p></div></div>"); //220
-**/
-                      
 	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p></div></div>"); //600
 	        
 	        out.println("<div id='socialmediawrap'><div id='socialmedia'>"

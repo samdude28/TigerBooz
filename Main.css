@@ -18,21 +18,44 @@ p {
     padding: 10px;
 }
 
+
+.bigtextbox {
+    height:69px;
+    width:600px;
+}
+
+.centered 
+{
+    text-align: center;
+}
+
+.centered table 
+{
+    margin: 0 auto; 
+    text-align: left;
+    border-spacing: 0;
+    padding-right: 0px;
+    padding-left: 0px;
+    border: 0px;
+    border-collapse: collapse;
+}
+
+.borders table
+{
+    border-left: 0px solid #EEEEEE;
+    padding-left: 1px
+    border-top: 0px solid #EEEEEE;
+}
+
 #keywords table { 
     border-collapse: collapse;
     border-spacing: 0; 
     border: 0px solid #000000;
     padding-right: 0px;
+    padding-left: 0px;
 }
 
 
-td+td, th+th {
-    border-left: 1px solid #EEEEEE;
-}
-
-tr+tr {
-    border-top: 1px solid #EEEEEE;
-}
 
 #noBorder {
     border-left: 0px;
