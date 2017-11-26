@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -218,27 +219,52 @@ public class Liquor extends HttpServlet {
 	}
 	
 	public static String getLiquorRatingImage(int liquorID) {
-		String liquorImage = "";
+		String liquorImage = "<table><tr>";
 		float liquorRating = getLiquorRating(liquorID);
+		int imageCounter = 1;
+System.out.println(liquorRating);		
 		
 		//for each rating over 1.0 add a full star to the string
-		while (liquorRating > 1.0) {
-			liquorImage += "<img src='http://52.26.169.0/pictures/star.jpg'>";
+		while (liquorRating >= 1.0) {
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
 			liquorRating--;
+			imageCounter++;
 		}
+System.out.println(liquorRating);		
 		
 		//now pick the correct image with 25% 50% or 75% of a "star"
-		if (liquorRating > 0.74)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star75.jpg'>";
-		else if (liquorRating > 0.49)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star50.jpg'>";
-		else if (liquorRating > 0.25)
-			liquorImage += "<img src='http://52.26.169.0/pictures/star25.jpg'>";
+		if (liquorRating > 0.74) {
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star75.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+			imageCounter++;
+		}
+		else if (liquorRating > 0.49) {
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+					    +  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star50.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+			imageCounter++;
+		}
+		else if (liquorRating > 0.25) {
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star25.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+			imageCounter++;
+		}
 		
+		while(imageCounter<5) {
+			liquorImage += "<td><form action='/4330/Rating' method='post'><input type='hidden' name='starRating' value='"+liquorRating+"'>"
+						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+liquorRating+" star' width='20' height='25'></form></td>";
+			imageCounter++;
+		}
+System.out.println(liquorRating);		
 		//if no ratings were found, return the no ratings image
 		if(liquorImage.equals(""))
 				return "<img src='http://52.26.169.0/pictures/norating.jpg'>";
-		return liquorImage;
+		return liquorImage+"</tr></table>";
 	}
 	
 	public static String getLiquorRatingImage(int liquorID, int userID) {
@@ -427,6 +453,24 @@ public class Liquor extends HttpServlet {
 		}
     	return numReviews;
     }
+    
+	/**
+	 * Takes an array of cookies and looks for one that contains TigerBoozLiquorID, signifying that
+	 *   cookie contains the liquor's unique ID number.
+	 * @param cookies an array of cookies
+	 * @return the liquor's unique ID
+	 */
+	public static  int getLiquorIDFromCookie(Cookie[] cookies){
+		int liquorID = 0;
+		
+		//look through the array of cookies for one named TigerBoozLiquorID
+		if(cookies != null)
+			for(Cookie cookie : cookies) 
+				if(cookie.getName().equals("TigerBoozLiquorID"))
+					liquorID = Integer.parseInt(cookie.getValue());
+
+		return liquorID;
+	}
     
 	public Liquor() {
         super();

@@ -3,7 +3,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -20,9 +19,8 @@ public class WriteReview extends HttpServlet {
 	private static String DB_TABLE             = "review";
 	private static String DB_NAME              = "tigerbooz";
 	private static String DB_URL               = "jdbc:mysql://localhost:3306/"+DB_NAME+"?autoReconnect=true&relaxAutoCommit=true";	
-	private static Connection conn = null;
-	private static Statement  stmt = null;
-	private PrintWriter out;
+	private static PreparedStatement pstmt     = null;
+	private static Connection conn             = null;
 	
 	/**
 	 * Servlet accepts a users new or edited review and makes the neccessary changes to the database
@@ -44,7 +42,7 @@ public class WriteReview extends HttpServlet {
 			
 			//if user already left a review for this liquor, delete old record 
 			if(hasExisitingRecord.equals("true")) 
-				deleteOldReview(liquorID, name);
+				deleteOldReview(liquorID, userID);
 
 			//taking a performance hit with prepareStatement to sanitize inputs
 			String sql = "INSERT INTO "+DB_TABLE+" VALUES (?, ?, ?)";
@@ -63,8 +61,8 @@ public class WriteReview extends HttpServlet {
 		} finally {
 			//finally, attempt close the connection
 			try {
-				if(stmt!=null)
-					stmt.close();
+				if(pstmt!=null)
+					pstmt.close();
 				if(conn!=null)
 					conn.close();
 			} catch (SQLException e) {
@@ -74,7 +72,7 @@ public class WriteReview extends HttpServlet {
 
 		//create a cookie for the liquorID 
 		Cookie liquorIDCookie;
-		liquorIDCookie = new Cookie("TigerBoozLiquorID", liquorID);
+		liquorIDCookie = new Cookie("TigerBoozLiquorID", Integer.toString(liquorID));
 		
 		//cookies only need to live long enough for Review to read what liquor the user was looking at
 		liquorIDCookie.setMaxAge(5); 
@@ -93,13 +91,16 @@ public class WriteReview extends HttpServlet {
 	 */
 	private static void deleteOldReview(int liquorID, int userID) {
 		//start the delete sql statement
-		String sql = "delete from "+DB_TABLE+" where user_id="+userID+" and ";
-				   + "liquor_id="+liquorID+";";
+		String sql = "delete from "+DB_TABLE+" where user_id=? and liquor_id=?;";
 		
-		//try to execute the statement
 		try {
-			stmt = (Statement) conn.createStatement();
-			stmt.executeUpdate(sql);
+			//prepare the statement, sanitizing any bad user input
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userID);
+			pstmt.setInt(2, liquorID);
+			
+			//now execute the delete command
+			pstmt.executeUpdate();
 			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();

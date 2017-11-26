@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +40,7 @@ public class Review extends HttpServlet {
 		 * If WriteReview.java calls, data will be via cookie
 		 * If Liquor.java calls, data will be via a form post
 		 */
-		int liquorID = getLiquorIDFromCookie(request.getCookies());
+		int liquorID = Liquor.getLiquorIDFromCookie(request.getCookies());
 		
 		//if the liquor ID is 0, no cookie was found, so pull liquorID from form data
 		if(liquorID==0) 
@@ -53,7 +52,7 @@ public class Review extends HttpServlet {
 					"<thead><tr>\n"+
 				    "<th><span>"+Liquor.getLiquorNameByID(liquorID)+" Reviews</span></th>\n"+
 		            "<th><span>User</span></th>"
-				  + "<td><span>Rating</span></tr></thead><tr>\n");
+				  + "<td><span>Rating</span></tr></thead>\n");
 		
 		//connect to the db and read all table rows into array of objects
 		try {
@@ -101,8 +100,7 @@ public class Review extends HttpServlet {
 			stmt = (Statement) conn.createStatement();
 			
 			//look for any reviews from this user for this liquor
-			String sql = "SELECT * FROM "+DB_TABLE+" WHERE login_name='"+name+"'"
-					   + "AND liquor_id="+liquorID+");";
+			String sql = "SELECT * FROM "+DB_TABLE+" WHERE user_id="+userID+" AND liquor_id="+liquorID+";";
 
 			//now execute the query into a resultset
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
@@ -111,15 +109,15 @@ public class Review extends HttpServlet {
 			out.println("<br><br><br><br><br>\n");
 			out.println("<table><tr><td>");
 			out.println("<form action='52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
-			out.println("<label>Your review of this liquor:</label><br>"
-			          + "<input type='hidden' name='userID' value="+usedID+"> \n"
+			out.println("<label>Your review of "+Liquor.getLiquorNameByID(liquorID)+":</label><br>"
+			          + "<input type='hidden' name='userID' value="+userID+"> \n"
 					  + "<input type='hidden' name='liquorID' value='"+liquorID+"'> \n");
 			
 			
 			//if user has left a review put it in the form for editing
 			out.println("<textarea name='reviewText' class='bigtextbox' maxlength='300'>");
 			if(rs.next()) { 
-				out.println(rs.getString("text")+"</textarea>\n");
+				out.println(rs.getString("review")+"</textarea>\n");
 		        out.println("<input type='hidden' name='hasExistingRecord' value='true'>");
 			}
 			//otherwise present an empty form
@@ -153,7 +151,7 @@ public class Review extends HttpServlet {
 	 * @return a String that contains a self contained HTML table
 	 */
 	public static String printOneReview(int liquorID, int userID) {
-		//initialize the random review string and get the users name
+		//initialize the random review string and get the users unique id number
 		String oneLiquorReview = "";
 		String userName = User.getUserNameByID(userID);
 
@@ -199,24 +197,6 @@ public class Review extends HttpServlet {
 			e.printStackTrace();
 		}
 		return oneLiquorReview;
-	}
-	
-	/**
-	 * Takes an array of cookies and looks for one that contains TigerBoozLiquorID, signifying that
-	 *   cookie contains the liquor's unique ID number.
-	 * @param cookies an array of cookies
-	 * @return the liquor's unique ID
-	 */
-	private int getLiquorIDFromCookie(Cookie[] cookies){
-		int liquorID = 0;
-		
-		//look through the array of cookies for one named TigerBoozLiquorID
-		if(cookies != null)
-			for(Cookie cookie : cookies) 
-				if(cookie.getName().equals("TigerBoozLiquorID"))
-					liquorID = Integer.parseInt(cookie.getValue());
-
-		return liquorID;
 	}
 	
 	public Review() {

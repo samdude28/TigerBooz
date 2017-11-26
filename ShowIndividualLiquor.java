@@ -40,12 +40,15 @@ public class ShowIndividualLiquor extends HttpServlet {
 		LoadTemplate.loadTemplate(User.getUserNameByID(userID), out);
 
 		//get the liquor ID and name from the http form post
-		int liquorID=0;
-		try {
-			liquorID = Integer.parseInt(request.getParameter("liquorID").trim());
-		} catch (NumberFormatException nfe) {
-			System.out.println(nfe.getMessage());
-		}
+		int liquorID = Liquor.getLiquorIDFromCookie(request.getCookies());
+		
+		//if the liquor ID is 0, no cookie was found, so pull liquorID from form data
+		if(liquorID==0) 
+			try {
+				liquorID = Integer.parseInt(request.getParameter("liquorID").trim());
+			} catch (NumberFormatException nfe) {
+				System.out.println(nfe.getMessage());
+			}
 
 		//get the liquor name and setup the iframe for the Google Map integration
 		String liquorName = request.getParameter("liquorName");

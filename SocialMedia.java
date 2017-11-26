@@ -34,7 +34,6 @@ public class SocialMedia extends HttpServlet {
 	
     public SocialMedia() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
