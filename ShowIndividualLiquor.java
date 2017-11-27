@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ShowIndividualLiquor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final static String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME;   
-	private final static String DB_NAME  = "tigerbooz";
 	private final static String DB_TABLE = "liquor";
+	private final static String DB_NAME  = "tigerbooz";
+	private final static String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME;   
 	private static Connection conn;
 	private static Statement stmt;
 	private static PrintWriter out;

@@ -101,7 +101,7 @@ public class BoilerPlate extends HttpServlet {
 	}
 	
 	
-    public Home() {
+    public BoilerPlate() {
         super();
     }
 	
