@@ -30,16 +30,15 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//Define the database parameters for this servlet
-		String DB_TABLE    = "user";
-		String DB_NAME     = "tigerbooz";
-		String DB_URL      = "jdbc:mysql://localhost:3306/"+DB_NAME;
+		String DB_TABLE = "user";
+		String DB_NAME  = "tigerbooz";
+		String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME;
 
 		//get the name & password from the HTML form
 		String nameInput = request.getParameter("name");
 		String passInput = request.getParameter("password");
 		
-		//temporary variables used to comb through the db
-		String name, password;
+		//initialize the users unique ID number
 		int userID;
 		
 		//try to connect to db and search for the user
