@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
  /**
- * @author Nathanael Bishop and Christian Rodriguez
+ * @author Nathanael Bishop (coder) and Christian Rodriguez (editor)
  * TigerBooz  CSC 4330 Project
  * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
  * read and share ratings, reviews and prices of liquors. 
