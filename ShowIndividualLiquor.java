@@ -67,8 +67,7 @@ public class ShowIndividualLiquor extends HttpServlet {
 			}
 
 		//setup the iframe for the Google Map integration
-		String iframe="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d55049.33166631953!2d-91.13767542879442!3d30.41956442503378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s"+Liquor.getLiquorCategoryByID(liquorID)+"!5e0!3m2!1sen!2sus!4v1511378188658";
-		
+		String iframe="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d220148.3775087238!2d-91.25150430965397!3d30.441249586068306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1scheap+liquor+"+Liquor.getLiquorCategoryByID(liquorID)+"+baton+rouge+grocery!5e0!3m2!1sen!2sus!4v1511845154252";
 		try {
 			//Open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
@@ -85,24 +84,27 @@ public class ShowIndividualLiquor extends HttpServlet {
 					  + "<img src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420'><br><br>&nbsp;</td>");
 
 			//add liquor name
-			out.println("<td style='text-align:center;'><div style='text-align:center'><h2>"+liquorName+"</h2><br><br>");
+			out.println("<td style='text-align:center;'><table width=100%><tr><td><div style='text-align:center'><h1>"+liquorName+"</h1><br></td></tr>");
 
 			//add liquor rating picture and allow user to leave their own rating
-			out.println(Liquor.getLiquorRatingImage(liquorID)+"<br><br>");
+			out.println("<tr><td style='margin:auto;'><table width=90%><tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td width=100%>"+Liquor.getLiquorRatingImage(liquorID)
+					+ "</td><td width=100%>"+SocialMedia.getSocialMediaButtons(liquorID)+"</td></tr></table><br><br></td></tr>");
 
 			//add the liquor average price 
-			out.println("Average Price - $"+Liquor.getLiquorPrice(liquorID));
+			out.println("<tr><td style='text-align:center;'>Average Price - $"+Liquor.getLiquorPrice(liquorID)
+				      + "<form action='/4330/Price' method='post'><input type='text' name='price'>"
+				      + "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
+				      + "<button type='submit'>Leave Price</button></form><br><br>&nbsp;</td></tr></table>");
 
 			//google maps showing cheapest place to get this particular liquor
-			out.println("<iframe src='"+iframe+"' style='border:0' width='500' heigh='500' frameborder='0' allowfullscreen>"
+			out.println("<iframe src='"+iframe+"' style='border:0' width='500' height='400' frameborder='0' allowfullscreen>"
                       + "</iframe></div></td></table>\n");
 			
 			//print one randomly chosen user review of this liquor
-	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p></div></div>"); //600
+	        out.println("<div id='socialmediawrap'><div id='comments'><p>"+Review.printOneReview(liquorID, userID)+"</p>"); //600
 	        
 			//print the social media links
-	        out.println("<div id='socialmediawrap'><div id='socialmedia'>"
-	        		  + "<p>"+SocialMedia.getSocialMediaButtons(liquorID)+"</p></div></div>");
+	       // out.println("<p>"+SocialMedia.getSocialMediaButtons(liquorID)+"</p></div></div>");
 	
 			//close all the database connections
 	 		if(rs != null)

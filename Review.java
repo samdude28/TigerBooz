@@ -124,7 +124,7 @@ public class Review extends HttpServlet {
 			//start the user review form inside a table
 			out.println("<br><br><br><br><br>\n");
 			out.println("<table><tr><td>");
-			out.println("<form action='52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
+			out.println("<form action='http://52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
 			out.println("<label>Your review of "+Liquor.getLiquorNameByID(liquorID)+":</label><br>"
 			          + "<input type='hidden' name='userID' value="+userID+"> \n"
 					  + "<input type='hidden' name='liquorID' value='"+liquorID+"'> \n");

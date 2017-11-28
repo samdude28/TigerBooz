@@ -28,7 +28,7 @@ public class SocialMedia extends HttpServlet {
 		
 		//create the clickable facebook and the twitter icons 
 		socialMediaButtons += "<a href='https://www.google.com/search?btnI=3564&q="+liquorName+"%20"+liquorCategory+"%20facebook'>"
-				           +  "<img src='http://52.26.169.0/pictures/facebook.png' width='60' height='60'></a></td>\n<td>";
+				           +  "<img src='http://52.26.169.0/pictures/facebook.png' width='60' height='60'></a></td>\n<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>";
 		socialMediaButtons += "<a href='https://www.google.com/search?btnI=3564&q="+liquorName+"%20"+liquorCategory+"%20twitter'>"
 						   +  "<img src='http://52.26.169.0/pictures/twitter.png' width='60' height='60'></a></td></tr></table>\n";
 

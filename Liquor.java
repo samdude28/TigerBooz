@@ -253,7 +253,7 @@ public class Liquor extends HttpServlet {
 	 */
 	public static String getLiquorRatingImage(int liquorID) {
 		//start the HTML String and the fraction of a whole number image we'll use later
-		String liquorImage        = "<table class='centered'><tr>";
+		String liquorImage        = "<table class='keywords'><tr>";
 		String starRatingFraction = "star25.jpg";
 
 		//this float is counted down until it reaches 0, for each count an image is displayed

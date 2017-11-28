@@ -13,15 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Nathanael Bishop (of this particular Java servlet)
+ * @author Joshua Grunder, debugged by Nathanael Bishop (this particular Java servlet)
  * TigerBooz  CSC 4330 Project
  * These Java servlets represent the dynamic portion of the TigerBooz website, a website built to let people
  *   read and share ratings, reviews and prices of liquors. 
  */
 
-public class Rating extends HttpServlet {
+public class Price extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String DB_TABLE = "prices";
+	private static String DB_TABLE = "price";
 	private static String DB_NAME  = "tigerbooz";
 	private static String DB_URL   = "jdbc:mysql://localhost:3306/"+DB_NAME+"?autoReconnect=true&relaxAutoCommit=true";
 	private static Connection conn = null; 
@@ -29,7 +29,7 @@ public class Rating extends HttpServlet {
 
 	/**
 	 * This servlet takes a form post from a user indicating what Price they would like to leave for a 
-	 *   particular liquor. If the user has already left a Price for this liquor, delete it and add in the new rating.
+	 *   particular liquor. If the user has already left a Price for this liquor, delete it and add in the new price.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//get the users ID number, if it's not found, boot them to the login screen
@@ -37,11 +37,11 @@ public class Rating extends HttpServlet {
 		if(userID==0)
 			response.sendRedirect("http://52.26.169.0");
 
-		//get the users desired star rating and which liquor from the form post
-		float price = Float.parseFloat(request.getParameter("price"));
-		int   liquorID   = Integer.parseInt(request.getParameter("liquorID"));
+		//get the price the user found the liquor at (remove $ if they type it) and which liquor from the form post
+		float price    = Float.parseFloat(request.getParameter("price").replaceAll("$", ""));
+		int   liquorID = Integer.parseInt(request.getParameter("liquorID"));
 		
-		//if the user had Priced this liquor already, delete the old rating
+		//if the user had Priced this liquor already, delete the old price
 		if(hasUserPricedLiquor(userID, liquorID))
 			deleteOldPrice(userID, liquorID);
 		
@@ -81,9 +81,9 @@ public class Rating extends HttpServlet {
 		PrintWriter out=response.getWriter();
 		String docType="<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n";
 		
-		//create the bit of html to be displayed thanking the user for rating the liquor
+		//create the bit of html to be displayed thanking the user for pricing the liquor
 		out.println(docType + "<html><head><title>User Login</title></head><body>\n");
-		out.println("<h2> Thanks for the Rating, you're being redirected shortly</h2>\n");
+		out.println("<h2> Thanks for leaving a price, you're being redirected shortly</h2>\n");
 
 		//send the user to the specific liquors page in 3 seconds
 		response.setHeader("Refresh", "3; URL=/4330/ShowIndividualLiquor");
@@ -121,7 +121,7 @@ public class Rating extends HttpServlet {
 	}
 	
 	/**
-	 * Looks through the database to determine if a user has left a rating for a particular liquor
+	 * Looks through the database to determine if a user has left a price for a particular liquor
 	 * @param liquorID the unique ID number of a liquor
 	 * @param userID the unique ID number of a user
 	 * @return true if the user has Priced that liquor, otherwise false
@@ -141,7 +141,7 @@ public class Rating extends HttpServlet {
 			//now execute the query into a resultset
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 	
-			//if the resultset isnt empty, this user has left a rating for this liquor
+			//if the resultset isnt empty, this user has left a price for this liquor
 			if(rs.next())
 				hasUserPricedLiquor = true;
 			
@@ -161,7 +161,7 @@ public class Rating extends HttpServlet {
 	/**
 	 * boilerplate servlet code
 	 */
-    public Rating() {
+    public Price() {
         super();
     }
 

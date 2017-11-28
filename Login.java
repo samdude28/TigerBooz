@@ -74,7 +74,7 @@ public class Login extends HttpServlet {
 				
 				//create the first bit of html to be displayed
 				out.println(docType + "<html><head><title>User Login</title></head><body>\n");
-				out.println("<h1>Incorrect name or password!</h1><a href='index.html'>Go Back</a>");
+				out.println("<h1>Incorrect name or password!</h1><a href='http://52.26.169.0/index.html'>Go Back</a>");
 
 				//finally close out the html tags
 				out.println("</body></html>");

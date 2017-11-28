@@ -38,7 +38,7 @@ public class WriteReview extends HttpServlet {
 		int liquorID              = Integer.parseInt(request.getParameter("liquorID"));
 		String reviewText         = request.getParameter("reviewText");
 		String hasExisitingRecord = request.getParameter("hasExistingRecord");
-
+System.out.println("write review");
 		try {
 			//open a connection to the database
 			Class.forName("com.mysql.jdbc.Driver");
