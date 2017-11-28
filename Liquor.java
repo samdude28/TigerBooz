@@ -269,7 +269,7 @@ public class Liquor extends HttpServlet {
 						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
 						//for each rating over 1.0 add a full star image the string
-					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
+					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='40' height='50'></form></td>";
 			liquorRating--;
 			imageCounter++;
 		}
@@ -449,7 +449,7 @@ public class Liquor extends HttpServlet {
                                +  "<form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
 						       +  "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
 						       +  "<input type='hidden' name='liquorName' value='"+liquorName+"'>\n"
-			                   +  "<input type='image' src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='84' height='210' alt='"+liquorName+"'>"
+			                   +  "<input type='image' src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420' alt='"+liquorName+"'>"
 			                   +  "</form></td>\n";
 				featuredLiquor += "<td>"+rs.getString("name")+"<br>\n$"+getLiquorPrice(liquorID)+"</td>\n";
 			    featuredLiquor += "<td>"+Liquor.getLiquorRatingImage(liquorID)+"<br>\n"

@@ -59,7 +59,7 @@ public class ShowIndividualLiquor extends HttpServlet {
 		if(liquorID==0) 
 			try {
 				//convert the liquorID string into an int and retrieve the liquor's name
-				liquorID   = Integer.parseInt(request.getParameter("liquorID").trim());
+				liquorID   = Integer.parseInt(request.getParameter("liquorID"));
 				liquorName = request.getParameter("liquorName");
 			//occasionally a NFE error was occuring so this try/catch block was added
 			} catch (NumberFormatException nfe) {
