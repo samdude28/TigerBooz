@@ -128,12 +128,12 @@ public class Review extends HttpServlet {
 			out.println("<form action='http://52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
 			
 			//display the users review and allow input
-			out.println("<label>Your review of "+Liquor.getLiquorNameByID(liquorID)+":</label><br>"
+			out.println("<label>Your review or recipe for "+Liquor.getLiquorNameByID(liquorID)+":</label><br>"
 			          + "<input type='hidden' name='userID' value="+userID+"> \n"
 					  + "<input type='hidden' name='liquorID' value='"+liquorID+"'> \n");
 			
 			//start the form textarea where a user can type in a review
-			out.println("<textarea name='reviewText' class='bigtextbox' maxlength='300'>");
+			out.println("<textarea name='reviewText' class='bigtextbox' maxlength='800'>");
 
 			//if user has left a review put it in the form for editing
 			if(rs.next()) { 
@@ -190,7 +190,7 @@ public class Review extends HttpServlet {
 			oneLiquorReview+="<table id='keywords'><tr><td><form action='http://52.26.169.0:8080/4330/Review' method='post' accept-charset='UTF-8'>\n"
 			          + "<input type='hidden' name='liquorID' value="+liquorID+"> \n"
 					  + "<input type='hidden' name='userName' value='"+userName+"'> \n"
-					  + "<button type='submit'>See more "+Liquor.getLiquorNameByID(liquorID)+" reviews</button></form></td>"
+					  + "<button type='submit'>See more "+Liquor.getLiquorNameByID(liquorID)+" reviews and recipes</button></form></td>"
 					  + "<td>User</td><td>Rating</td></tr><tr>";
 			
 			//if found, grab the review string and convert the reviewer's ID into their name

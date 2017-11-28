@@ -59,7 +59,7 @@ public class Home extends HttpServlet {
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//start the table for the users own reviews 
-			out.println("<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your Past Reviews</h2>\n&nbsp;"
+			out.println("<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your Past Reviews and Recipes</h2>\n&nbsp;"
                       + "<table id='keywords' cellspacing=0 cellpadding=0>"
 					  + "<thead><tr><th>&nbsp;&nbsp;</th>\n");
 			out.println("<th><span>Liquor Name</span></th>\n"
