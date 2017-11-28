@@ -59,16 +59,16 @@ public class Home extends HttpServlet {
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
 			//start the table for the users own reviews 
-			out.println("<h2>Your Past Reviews</h2>"
+			out.println("<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your Past Reviews</h2>\n&nbsp;"
                       + "<table id='keywords' cellspacing=0 cellpadding=0>"
-					  + "<thead><tr>\n");
+					  + "<thead><tr><th>&nbsp;&nbsp;</th>\n");
 			out.println("<th><span>Liquor Name</span></th>\n"
-					  + "<th><span>Your Review</span></th>\n</tr></thead><tr>\n");
+					  + "<th><span>Your Review</span></th>\n</tr></thead>\n");
 			
 			//loop through the result set and print in the table
 			while(rs.next()) {
 				//get the liquor name passing the liquor_id from SQL to Liquor.java 
-				out.println("<tr><td>"+Liquor.getLiquorNameByID(rs.getInt("liquor_id"))+"</td>\n");
+				out.println("<tr><td></td><td>"+Liquor.getLiquorNameByID(rs.getInt("liquor_id"))+"</td>\n");
 				out.println("<td>"+rs.getString("review")+"</td>\n</tr>\n");
 			}
 			

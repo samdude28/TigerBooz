@@ -256,6 +256,10 @@ public class Liquor extends HttpServlet {
 		String liquorImage        = "<table class='keywords'><tr>";
 		String starRatingFraction = "star25.jpg";
 
+		//for quick tweaking of image attributes, set the size of the images here 
+		int height = 50;
+		int width  = 40;
+		
 		//this float is counted down until it reaches 0, for each count an image is displayed
 		float liquorRating = getLiquorRating(liquorID);
 
@@ -269,7 +273,7 @@ public class Liquor extends HttpServlet {
 						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
 						//for each rating over 1.0 add a full star image the string
-					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='40' height='50'></form></td>";
+					    +  "<input type='image' src='http://52.26.169.0/pictures/star.jpg' alt='"+imageCounter+" star' width='"+width+"' height='"+height+"'></form></td>";
 			liquorRating--;
 			imageCounter++;
 		}
@@ -286,7 +290,7 @@ public class Liquor extends HttpServlet {
 						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
 						//display the appropriate fraction image
-				        +  "<input type='image' src='http://52.26.169.0/pictures/"+starRatingFraction+"' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/"+starRatingFraction+"' alt='"+imageCounter+" star' width='"+width+"' height='"+height+"'></form></td>";
 			imageCounter++;
 		}
 
@@ -296,7 +300,7 @@ public class Liquor extends HttpServlet {
 						//indicate to the next servlet which liquor ID we're rating
 						+  "<input type='hidden' value='"+liquorID+"' name='liquorID'>"
 						//display empty star
-				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+imageCounter+" star' width='20' height='25'></form></td>";
+				        +  "<input type='image' src='http://52.26.169.0/pictures/star0.jpg' alt='"+imageCounter+" star' width='"+width+"' height='"+height+"'></form></td>";
 			imageCounter++;
 		}
 
@@ -332,7 +336,7 @@ public class Liquor extends HttpServlet {
 		 
 		//if no ratings were found, return the no ratings image
 		if(liquorImage.equals(""))
-				return "<img src='http://52.26.169.0/pictures/norating.jpg' width='20' height='25'>";
+				return "<img src='http://52.26.169.0/pictures/norating.jpg' width='100' height='25'>";
 		//else return the HTML images String
 		return liquorImage;
 	}
@@ -426,7 +430,7 @@ public class Liquor extends HttpServlet {
 		String DB_TABLE    = "liquor";
 
 		//start the HTML table  
-		featuredLiquor += "<table id='keywords' cellspacing=0 cellpadding=0>";
+		featuredLiquor += "<table id='keywords' cellspacing=0 cellpadding=0 class='centered'>";
 		
 		try {
 			//Open a connection to the database
@@ -445,15 +449,24 @@ public class Liquor extends HttpServlet {
 			if(rs.next()) {
 				liquorID = rs.getInt("id");
 				String liquorName=rs.getString("name");
-				featuredLiquor += "<tr><td><font color='#c507e6'>"+getLiquorNameByID(liquorID)+"</font><br>"
-                               +  "<form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
+				
+				//print the featured liquor's name 
+				featuredLiquor += "<tr><td colspan='4'><h1>Featured Liquor:"+getLiquorNameByID(liquorID)+"</h1></td></tr>";
+				
+				//print the clickable image of the liquor that brings the user to that particular liquors page
+				featuredLiquor += "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
+                               +  "<td><form action='http://52.26.169.0:8080/4330/ShowIndividualLiquor' method='post'>"
 						       +  "<input type='hidden' name='liquorID' value='"+liquorID+"'>"
 						       +  "<input type='hidden' name='liquorName' value='"+liquorName+"'>\n"
 			                   +  "<input type='image' src='http://52.26.169.0/pictures/"+liquorName+".jpg' width='168' height='420' alt='"+liquorName+"'>"
-			                   +  "</form></td>\n";
-				featuredLiquor += "<td>"+rs.getString("name")+"<br>\n$"+getLiquorPrice(liquorID)+"</td>\n";
-			    featuredLiquor += "<td>"+Liquor.getLiquorRatingImage(liquorID)+"<br>\n"
-			                   +  "Number of Reviews: "+getNumReviews(liquorID)+"</td></tr></table>\n";
+			                   +  "</form></td>\n<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+				
+				//print the average price of that liquor
+				featuredLiquor += "<td class='centered'>Average price: $"+getLiquorPrice(liquorID)+"<br><br><br>\n";
+			    
+				//now print the liquor's average rating (as a series of pics
+				featuredLiquor += Liquor.getLiquorRatingImage(liquorID)+"<br>\n"
+			    		       +  "Number of Reviews: "+getNumReviews(liquorID)+"</td></tr></table>\n";
 			}
 			//close all the connections
 	 		if(rs != null)

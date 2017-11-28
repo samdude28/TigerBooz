@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,28 +55,12 @@ public class Login extends HttpServlet {
 				//get this users unique ID 
 		 		userID   = rs.getInt("id");
 
-		 		//create the login token cookie
-		 		Cookie loginCookie = new Cookie ("TigerBoozID", Integer.toString(userID));
-		 		loginCookie.setMaxAge(60 * 60);
-
-		 		//add the cookie and send the user to the home screen
-		 		response.addCookie(loginCookie);
-		 		response.sendRedirect("Home");
-			 	}
-			//else there was no match, so inform the user
-			else {
-				//setup the PrintWriter response to be browser HTML compatible
-				response.setContentType("text/html;charset=UTF-8");
-				final PrintWriter out=response.getWriter();
-				String docType="<!doctype html public \"-//w3c//dtd html 4.0 transitional//en\">\n";
-				
-				//create the first bit of html to be displayed
-				out.println(docType + "<html><head><title>User Login</title></head><body>\n");
-				out.println("<h1>Incorrect name or password!</h1><a href='http://52.26.169.0/index.html'>Go Back</a>");
-
-				//finally close out the html tags
-				out.println("</body></html>");
-			}
+		 		//print a successful login message and redirect user to home page
+		 		Signup.printMessageAndRedirect("Thanks for logging in", userID, true, response);
+			}			 	
+			//else there was no match, so inform the user and redirect to login screen
+			else 
+				Signup.printMessageAndRedirect("Incorrect username or password", 0, false, response);
 			
 			//close all the connections to the db
 	 		if(rs != null)

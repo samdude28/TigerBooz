@@ -77,7 +77,7 @@ public class Review extends HttpServlet {
 			
 			//print the entire result set in the table
 			while(rs.next()) {
-				out.println("<tr><td>"+rs.getString("review")+"</td>\n");
+				out.println("<tr><td width='500'>"+rs.getString("review")+"</td>\n");
 				out.println("<td>"+User.getUserNameByID(rs.getInt("user_id"))+"</td>\n");
 				out.println("<td>"+Liquor.getLiquorRatingImage(liquorID, rs.getInt("user_id"))+"</td></tr>");
 			}
@@ -121,10 +121,13 @@ public class Review extends HttpServlet {
 			//now execute the query into a resultset
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql);
 			
-			//start the user review form inside a table
-			out.println("<br><br><br><br><br>\n");
-			out.println("<table><tr><td>");
+			//start the table
+			out.println("<br><br><br><br><br>\n <table><tr><td>");
+			
+			//start the user review form
 			out.println("<form action='http://52.26.169.0:8080/4330/WriteReview' method='post' accept-charset='UTF-8'>\n");
+			
+			//display the users review and allow input
 			out.println("<label>Your review of "+Liquor.getLiquorNameByID(liquorID)+":</label><br>"
 			          + "<input type='hidden' name='userID' value="+userID+"> \n"
 					  + "<input type='hidden' name='liquorID' value='"+liquorID+"'> \n");
@@ -144,7 +147,7 @@ public class Review extends HttpServlet {
 			}
 			
 			//now place the submit button and close the table tags
-			out.println("<button type='submit'>Publish Review</button></form>"
+			out.println("<br><button type='submit'>Publish Review</button></form>"
 					  + "</td></tr></table>");
 				
 			//close all the database connections
