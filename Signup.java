@@ -26,7 +26,6 @@ public class Signup extends HttpServlet {
 	 * This servlet uses information from a html form post to attempt to add a user to the mysql database (create a new login)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		//setting up variables passed from the html	form	
 		String dobInput   = request.getParameter("dob");
 		String nameInput  = request.getParameter("name");
@@ -90,6 +89,15 @@ public class Signup extends HttpServlet {
 			}
 	}
 
+	/**
+	 * Prints any message to the user and either redirects them to the home screen (after creating the correct login cookie)
+	 *    or redirects them to the login screen
+	 * @param message the message to send to the user
+	 * @param userID the unique ID number of the user (can be 0 if redirecting to login screen)
+	 * @param redirectHome if true, create login cookie and redirect to home screen, otherwise just redirect to login screen
+	 * @param response the calling methods HttpServletResponse, needed to access output to users browser
+	 * @throws IOException for HttpServletResponse
+	 */
 	public static void printMessageAndRedirect(String message, int userID, boolean redirectHome, HttpServletResponse response) throws IOException {
 		//setup the PrintWriter response to be browser HTML compatible
 		response.setContentType("text/html;charset=UTF-8");
@@ -105,6 +113,7 @@ public class Signup extends HttpServlet {
 		//finally close out the html tags
 		out.println("</body></html>");
 		
+		//if calling method indicates we need to redirect home
 		if(redirectHome) {
 			//create the login token cookie
 			Cookie loginCookie = new Cookie ("TigerBoozID", Integer.toString(userID));
@@ -114,9 +123,9 @@ public class Signup extends HttpServlet {
 			response.addCookie(loginCookie);
 			response.setHeader("Refresh", "3; URL=/4330/Home");
 		}
+		//otherwise the calling method indicates to redirect to login screen
 		else
 			response.setHeader("Refresh", "3; URL=http://52.26.169.0");
-		
 	}
 	
 	/**
